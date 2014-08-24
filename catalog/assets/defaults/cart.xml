@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<cart><enabled>y</enabled><columns><labels><name><![CDATA[Name]]></name><price><![CDATA[Price]]></price><quantity><![CDATA[Qty]]></quantity><total><![CDATA[Subtotal]]></total></labels></columns><style><![CDATA[div]]></style><currency><![CDATA[USD]]></currency><language><![CDATA[english-us]]></language><checkout><type><![CDATA[PayPal]]></type><email><![CDATA[you@yours.com]]></email></checkout><shipping><flatrate><![CDATA[0]]></flatrate><quantityrate><![CDATA[0]]></quantityrate><totalrate><![CDATA[0]]></totalrate></shipping><tax><rate><![CDATA[0]]></rate><shipping><![CDATA[0]]></shipping></tax><css><![CDATA[/* items */
+.simpleCart_shelfItem {
+}
+	.item_name {
+	}
+	.item_Quantity {
+	}
+	.item_price {
+	}
+	.item_add {
+	}
+
+/* checkout/cart */
+.simpleCart_items {
+}
+.simpleCart_total {
+}
+.simpleCart_checkout {
+}]]></css><template><![CDATA[<!-- create a checkout button -->
+<a href="javascript:;" class="simpleCart_checkout"></a>
+
+<!-- button to empty the cart -->
+<a href="javascript:;" class="simpleCart_empty"></a>
+
+<!-- show the cart -->
+<div class="simpleCart_items"></div>
+    
+<!-- cart total (ex. $23.11)-->
+<div class="simpleCart_total"></div>
+    
+<!-- cart quantity (ex. 3) -->
+<div class="simpleCart_quantity"></div>
+    
+<!-- tax cost (ex. $1.38) -->
+<div class="simpleCart_tax"></div>
+
+<!-- tax rate (ex. %0.6) -->
+<div class="simpleCart_taxRate"></div>
+
+<!-- shipping (ex. $5.00) -->
+<div class="simpleCart_shipping"></div>
+
+<!-- grand total, including tax and shipping (ex. $28.49) -->
+<div class="simpleCart_grandTotal"></div>]]></template></cart>

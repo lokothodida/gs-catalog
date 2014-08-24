@@ -1,0 +1,2 @@
+<?xml version="1.0"?>
+<fields><field name="instock" type="checkbox" index="y" label="In Stock?"><![CDATA[y]]></field><field name="price" type="text" index="y" label="Price"><![CDATA[0.00]]></field><field name="image" type="text" index="y" label="Image (URL)"><![CDATA[http://]]></field><field name="rating" type="text" index="y" label="Rating (1-5)"><![CDATA[0]]></field><field name="description" type="wysiwyg" index="y" label="Description"><![CDATA[]]></field></fields>
