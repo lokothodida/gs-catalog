@@ -469,7 +469,7 @@ class CatalogPlugin {
       }
       */
       // main
-      elseif ($end == 'catalog') {
+      elseif ($end == (string) $general->slug) {
         $categories = new CatalogCategories(GSDATAOTHERPATH . $this->id . '/categories/*.xml', $GLOBALS['SITEURL'] . $general->baseurl, ((string) $general->slugged == 'y' ? true : false));
 
         // meta information
@@ -489,7 +489,7 @@ class CatalogPlugin {
           // view parents only
           elseif ($general->categoryview == 'parents') {
             $categories = $categories->getCategories(true, 'order');
-            
+
             foreach ($categories['parents'] as $category) {
               echo '<li class="category ' . $category->getId() . '">';
               eval('?>' . $templates['main']);
