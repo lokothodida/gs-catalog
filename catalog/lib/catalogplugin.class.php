@@ -14,7 +14,7 @@ class CatalogPlugin {
   public function i18nMerge() {
     i18n_merge($this->id) || i18n_merge($this->id, 'en_US');
   }
-  
+
   // queue autoload functions
   public function autoload() {
     spl_autoload_register(array($this, 'autoloader'));
@@ -95,7 +95,7 @@ class CatalogPlugin {
 	  queue_style('codemirror-css', GSBACK);
 	  queue_style('codemirror-theme', GSBACK);
 	  
-	  queue_script('jquery', GSFRONT); 
+	  queue_script('jquery', GSFRONT);
 	  queue_script('simpleCart', GSFRONT);
 	  
 	  // options
@@ -363,11 +363,11 @@ class CatalogPlugin {
         
         $catalog = new CatalogDisplay($catalogurl, $breadcrumbs);
         eval('?>' . $templates['header']);
-        
+
           // if the category view is 'parents', we need to show the children
           if ($general->categoryview == 'parents') {
             $categories = $cats->getCategories(true);
-            
+
             if (isset($categories['children'][$end])) {
               echo '<ul class="categories">';
               foreach ($categories['children'][$end] as $category) {
@@ -469,10 +469,13 @@ class CatalogPlugin {
       }
       */
       // main
-      elseif ($end == (string) $general->slug) {
+      elseif ($end == 'catalog') {
         $categories = new CatalogCategories(GSDATAOTHERPATH . $this->id . '/categories/*.xml', $GLOBALS['SITEURL'] . $general->baseurl, ((string) $general->slugged == 'y' ? true : false));
-        
+
         // meta information
+        $catalog = new CatalogDisplay($catalogurl, $breadcrumbs);
+        eval('?>' . $templates['header']);
+
         $data_index->title = (string) $general->title;
 
           echo '<ul class="categories">';
@@ -488,7 +491,7 @@ class CatalogPlugin {
             $categories = $categories->getCategories(true, 'order');
             
             foreach ($categories['parents'] as $category) {
-              echo '<li>';
+              echo '<li class="category ' . $category->getId() . '">';
               eval('?>' . $templates['main']);
               echo '</li>';
             }
@@ -499,7 +502,7 @@ class CatalogPlugin {
             $categories = $categories->getCategories(false, 'order');
 
             foreach ($categories as $category) {
-              echo '<li>';
+              echo '<li class="category ' . $category->getId() . '">';
               eval('?>' . $templates['main']);
               echo '</li>';
             }
