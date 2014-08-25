@@ -1,5 +1,5 @@
 <?php
-  $toolbar = !is_null($GLOBALS['EDTOOL']) ? ", toolbar: '" . trim($GLOBALS['EDTOOL'], ",'") . "'" : '';
+  $toolbar = !is_null($GLOBALS['EDTOOL']) ? ", toolbar: [" . trim($GLOBALS['EDTOOL'], ",'") . "]" : '';
   $options = !is_null($GLOBALS['EDOPTIONS']) ? ',' . trim($GLOBALS['EDOPTIONS'], ",") : '';
 ?>
 	<?php if ($GLOBALS['HTMLEDITOR'] != '') { ?>
@@ -19,7 +19,7 @@
 			  filebrowserBrowseUrl : 'filebrowser.php?type=all',
 			  filebrowserImageBrowseUrl : 'filebrowser.php?type=images',
 			  filebrowserWindowWidth : '730',
-			  filebrowserWindowHeight : '500' 
+			  filebrowserWindowHeight : '500'
 			  <?php echo $toolbar; ?>
 			  <?php echo $options; ?>
 	  });
