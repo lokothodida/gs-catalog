@@ -3,27 +3,32 @@
 class CatalogPlugin {
   public  $id, $title, $version, $author, $website, $desc, $page;
   private $dir, $options;
-  
+
   // constructor to set the id and plugin directory path
-  public function __construct($id) {
+  public function __construct($id, $dir) {
     $this->id = $id;
-    $this->dir = GSPLUGINPATH . $id;
+    $this->root = $dir;
+    $this->title    = 'PLUGIN_TITLE';
+    $this->version  = '0.2';
+    $this->author   = 'Lawrence Okoth-Odida';
+    $this->website  = 'https://github.com/lokothodida/';
+    $this->desc     = 'PLUGIN_DESC';
+    $this->admin    = 'back';
   }
-  
+
   // load language files
   public function i18nMerge() {
     i18n_merge($this->id) || i18n_merge($this->id, 'en_US');
   }
-  
+
   // queue autoload functions
   public function autoload() {
     spl_autoload_register(array($this, 'autoloader'));
   }
-  
+
   // our actual autoloader
   private function autoloader($class) {
-    // get the file name of the class (in plugins/yourplugin_oop/lib/classname.class.php)  
-    $file = GSPLUGINPATH . $this->id . '/lib/' . strtolower($class) . '.class.php';
+    $file = $this->root . '/lib/' . strtolower($class) . '.class.php';
 
     // load the class file if it exists
     if (file_exists($file)) {
@@ -85,21 +90,21 @@ class CatalogPlugin {
     
     // the below registers the codemirror css and javascript files
     register_script('codemirror', $GLOBALS['SITEURL'] . $GLOBALS['GSADMIN'] . '/template/js/codemirror/lib/codemirror-compressed.js', '0.2.0', FALSE);
-	  register_style('codemirror-css', $GLOBALS['SITEURL'] . $GLOBALS['GSADMIN'] . '/template/js/codemirror/lib/codemirror.css','screen',FALSE);
-	  register_style('codemirror-theme', $GLOBALS['SITEURL'] . $GLOBALS['GSADMIN'] . '/template/js/codemirror/theme/default.css','screen',FALSE);
-	  
-	  register_script('simpleCart', $GLOBALS['SITEURL'] . '/plugins/' . $this->id . '/assets/js/simpleCart.min.js', '1.0', FALSE);
-	  
-	  // queue the scripts and styles
-	  queue_script('codemirror', GSBACK);
-	  queue_style('codemirror-css', GSBACK);
-	  queue_style('codemirror-theme', GSBACK);
-	  
-	  queue_script('jquery', GSFRONT); 
-	  queue_script('simpleCart', GSFRONT);
-	  
-	  // options
-	  $this->initOptions();
+    register_style('codemirror-css', $GLOBALS['SITEURL'] . $GLOBALS['GSADMIN'] . '/template/js/codemirror/lib/codemirror.css','screen',FALSE);
+    register_style('codemirror-theme', $GLOBALS['SITEURL'] . $GLOBALS['GSADMIN'] . '/template/js/codemirror/theme/default.css','screen',FALSE);
+    
+    register_script('simpleCart', $GLOBALS['SITEURL'] . '/plugins/' . $this->id . '/assets/js/simpleCart.min.js', '1.0', FALSE);
+    
+    // queue the scripts and styles
+    queue_script('codemirror', GSBACK);
+    queue_style('codemirror-css', GSBACK);
+    queue_style('codemirror-theme', GSBACK);
+    
+    queue_script('jquery', GSFRONT); 
+    queue_script('simpleCart', GSFRONT);
+    
+    // options
+    $this->initOptions();
   }
   
   private function initOptions() {
@@ -214,7 +219,7 @@ class CatalogPlugin {
     $defaults = array('general', 'fields', 'templates', 'identifiers', 'cart');
     $success = array();
     foreach ($defaults as $default) {
-      $def = GSPLUGINPATH . $this->id . '/assets/defaults/' . $default . '.xml';
+      $def = $this->root . '/assets/defaults/' . $default . '.xml';
       $f = GSDATAOTHERPATH . $this->id . '/' . $default . '.xml';
       if (!file_exists($f) || $overwrite) {
         $success[] = copy($def, $f);
@@ -304,11 +309,11 @@ class CatalogPlugin {
       echo '<a href="' . $url . $pages . '">&raquo;</a>';
     }
   }
-  
+
   // front-end callback
   public function front() {
     global $data_index;
-  
+
     $options = new CatalogOptions(GSDATAOTHERPATH . $this->id . '/');
     $options = $options->getOptions();
     $fullurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
@@ -323,14 +328,14 @@ class CatalogPlugin {
     $fields = &$options->fields;
     $catalogurl = $GLOBALS['SITEURL'] . $general->baseurl;
     $cart = new CatalogCart(GSDATAOTHERPATH . $this->id . '/cart.xml');
-    
+
     $slugged = ((string) $general->slugged == 'y' ? true : false);
-    
+
     if ($params[0] == $options->general->slug) {
       // initialize catagories
       $categories = new CatalogCategories(GSDATAOTHERPATH . $this->id . '/categories/*.xml', $GLOBALS['SITEURL'] . $general->baseurl, ((string) $general->slugged == 'y' ? true : false));
       $categories = $categories->getCategories();
-      
+
       // initialize breadcrumbs
       $breadcrumbs = array();
       $breadcrumbs[] = array('title' => $general->title, 'url' => null);
@@ -568,35 +573,35 @@ class CatalogPlugin {
     // products page
     if (isset($_GET['products'])) {
       if ($_GET['products'] == 'create') {
-        include($this->dir . '/inc/create_product.php');
+        include($this->root . '/inc/create_product.php');
       }
       elseif (!empty($_GET['products'])) {
-        include($this->dir . '/inc/edit_product.php');
+        include($this->root . '/inc/edit_product.php');
       }
       else {
         // view products
-        include($this->dir . '/inc/view_products.php');
+        include($this->root . '/inc/view_products.php');
       }
     }
     // options page
     elseif (isset($_GET['options'])) {
-      include($this->dir . '/inc/options.php');
+      include($this->root . '/inc/options.php');
     }
     // categories pages
     // catalog&categories=create
     elseif (!empty($_GET['categories']) && $_GET['categories'] == 'create') {
-      include($this->dir . '/inc/create_category.php');
+      include($this->root . '/inc/create_category.php');
     }
     // catalog&categories=categoryid
     elseif (!empty($_GET['categories']) && empty($_GET['delete'])) {
-      include($this->dir . '/inc/edit_category.php');
+      include($this->root . '/inc/edit_category.php');
     }
     // catalog&categories or just catalog
     elseif (isset($_GET['categories'])) {
-      include($this->dir . '/inc/view_categories.php');
+      include($this->root . '/inc/view_categories.php');
     }
     else {
-      include($this->dir . '/inc/admin.php');
+      include($this->root . '/inc/admin.php');
     }
 
     // error handling, taking from wiki
