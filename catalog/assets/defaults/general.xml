@@ -10,5 +10,7 @@
   <slugged><![CDATA[y]]></slugged>
   <internalsearch><![CDATA[]]></internalsearch>
   <i18nsearch><![CDATA[]]></i18nsearch>
-  <editortoolbar><![CDATA[basic]]></editortoolbar>
+  <wysiwyg><![CDATA[y]]></wysiwyg>
+  <wysiwygtoolbar><![CDATA[basic]]></wysiwygtoolbar>
+  <wysiwygoptions><![CDATA[]]></wysiwygoptions>
 </options>
