@@ -36,17 +36,17 @@
 </p>
 
 <div class="leftsec">
-	<p>
-	  <label for="slug"><?php i18n($this->id . '/SLUG'); ?>: </label>
-	  <input class="text" id="slug" name="slug" value="<?php echo $general->getSlug(); ?>" type="text">
-	</p>
   <p>
-	  <label for="productsperpage"><?php i18n($this->id . '/PROD_PERPAGE'); ?>: </label>
-	  <input class="text" id="productsperpage" name="productsperpage" value="<?php echo $general->getProductsPerPage(); ?>" type="number">
-	</p>
-	<p>
-	  <label for="pagination"><?php i18n($this->id . '/PAGINATION'); ?>: </label>
-	  <select class="text" name="pagination">
+    <label for="slug"><?php i18n($this->id . '/SLUG'); ?>: </label>
+    <input class="text" id="slug" name="slug" value="<?php echo $general->getSlug(); ?>" type="text">
+  </p>
+  <p>
+    <label for="productsperpage"><?php i18n($this->id . '/PROD_PERPAGE'); ?>: </label>
+    <input class="text" id="productsperpage" name="productsperpage" value="<?php echo $general->getProductsPerPage(); ?>" type="number">
+  </p>
+  <p>
+    <label for="pagination"><?php i18n($this->id . '/PAGINATION'); ?>: </label>
+    <select class="text" name="pagination">
       <option value="top" <?php if ($general->getPagination() == 'top') echo 'selected'; ?>>
         <?php i18n($this->id . '/TOP'); ?>
       </option>
@@ -57,12 +57,12 @@
         <?php i18n($this->id . '/BOTH'); ?>
       </option>
     </select>
-	</p>
+  </p>
 </div>
 <div class="rightsec">
-	<p>
-	  <label for="categoryview"><?php i18n($this->id . '/CATEGORY_VIEW'); ?>: </label>
-	  <select class="text" name="categoryview">
+  <p>
+    <label for="categoryview"><?php i18n($this->id . '/CATEGORY_VIEW'); ?>: </label>
+    <select class="text" name="categoryview">
       <option value="all" <?php if ($general->getCategoryView() == 'all') echo 'selected'; ?>>
         <?php i18n($this->id . '/VIEW_ALL'); ?>
       </option>
@@ -73,19 +73,19 @@
         <?php i18n($this->id . '/PARENTS_ONLY'); ?>
       </option>
     </select>
-	</p>
-	<p>
-	  <label for="i18nsearch"><?php i18n($this->id . '/SLUGGED'); ?>: </label>
-	  <input type="checkbox" name="slugged" value="y" <?php if ($general->getSlugged() == 'y') echo 'checked="checked"'; ?>>
-	</p>
-	<p>
-	  <label for="internalsearch"><?php i18n($this->id . '/INTERNAL_SEARCH'); ?>: </label>
-	  <input type="checkbox" name="internalsearch" value="y" <?php if ($general->getInternalSearch() == 'y') echo 'checked="checked"'; ?>>
-	</p>
-	<p>
-	  <label for="i18nsearch"><?php i18n($this->id . '/I18N_SEARCH'); ?>: </label>
-	  <input type="checkbox" name="i18nsearch" value="y" <?php if ($general->getI18nSearch() == 'y') echo 'checked="checked"'; ?>>
-	</p>
+  </p>
+  <p>
+    <label for="i18nsearch"><?php i18n($this->id . '/SLUGGED'); ?>: </label>
+    <input type="checkbox" name="slugged" value="y" <?php if ($general->getSlugged() == 'y') echo 'checked="checked"'; ?>>
+  </p>
+  <p>
+    <label for="internalsearch"><?php i18n($this->id . '/INTERNAL_SEARCH'); ?>: </label>
+    <input type="checkbox" name="internalsearch" value="y" <?php if ($general->getInternalSearch() == 'y') echo 'checked="checked"'; ?>>
+  </p>
+  <p>
+    <label for="i18nsearch"><?php i18n($this->id . '/I18N_SEARCH'); ?>: </label>
+    <input type="checkbox" name="i18nsearch" value="y" <?php if ($general->getI18nSearch() == 'y') echo 'checked="checked"'; ?>>
+  </p>
 </div>
 <div class="clear"></div>
 <label for="productsperpage"><?php i18n($this->id . '/ERROR_MESSAGE'); ?>: </label>
