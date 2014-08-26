@@ -1,5 +1,5 @@
 # GetSimple (GS) Catalog
-Items catalog for GetSimple CMS
+Items catalog plugin for GetSimple CMS.
 
 ## Getting started
 Check out the [wiki](//github.com/lokothodida/gs-catalog/wiki) for information on starting up *GS Catalog*.
