@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
-<templates><template name="main"><![CDATA[<a href="<?php echo $category->getUrl(); ?>"><?php echo $category->getTitle(); ?></a>
+<templates>
+<name><![CDATA[Innovation]]></name>
+<template name="main"><![CDATA[<a href="<?php echo $category->getUrl(); ?>"><?php echo $category->getTitle(); ?></a>
 <?php foreach ($category->getPhotos() as $photo) : ?>
   <img class="photo" src="<?php echo $photo; ?>"/>
 <?php endforeach; ?>
