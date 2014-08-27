@@ -6,7 +6,7 @@ class CatalogProduct {
   private $file;
   private $url;
   private $slugged;
-  
+
   // initializes product object using a valid filename
   // pre:   $file is a path to a valid catalog product
   public function __construct($file = null, $slugged) {
@@ -16,27 +16,30 @@ class CatalogProduct {
     }
     $this->slugged = $slugged;
   }
-  
+
   public function getField($name) {
-    if (isset($this->product->{$name})) {
+    $name = strtolower($name);
+
+    if ($name == 'url') {
+      return $this->getUrl();
+    } elseif (isset($this->product->{$name})) {
       return $this->product->{$name};
-    }
-    else {
+    } else {
       return null;
     }
   }
-  
+
   public function setCategory(CatalogCategory $category) {
     $key = array_search($category->getId(), (array) $this->product->categories->category);
     if ($key !== false) {
       $this->categories[$key] = $category;
     }
   }
-  
+
   public function getCategories() {
     return $this->categories;
   }
-  
+
   public function setUrl(CatalogCategory $category) {
     if ($this->slugged) {
       $this->url = $category->getUrl() . $this->product->id . '.htm';
@@ -46,7 +49,7 @@ class CatalogProduct {
       $this->url = $category->getUrl() . '&product='. $id;
     }
   }
-  
+
   public function getUrl() {
     return $this->url;
   }
