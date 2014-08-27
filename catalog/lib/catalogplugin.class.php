@@ -230,10 +230,6 @@ class CatalogPlugin {
       $f = GSDATAOTHERPATH . $this->id . '/' . $default . '.xml';
 
       if ($default == 'templates') {
-        // templates
-        // copy core file (that just says the active theme)
-        $success[] = copy($def, $f);
-
         // copy the basic themes available
         $themes = glob($this->root . '/assets/defaults/templates/*.xml');
 
@@ -243,10 +239,13 @@ class CatalogPlugin {
             $success[] = copy($theme, $f);
           }
         }
-      } elseif (!file_exists($f) || $overwrite) {
+      }
+
+      if (!file_exists($f) || $overwrite) {
         $success[] = copy($def, $f);
       }
     }
+
     return $success;
   }
   
