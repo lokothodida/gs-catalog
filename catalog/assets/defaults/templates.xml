@@ -1,89 +1,89 @@
 <?xml version="1.0"?>
 <templates><template name="main"><![CDATA[<a href="<?php echo $category->getUrl(); ?>"><?php echo $category->getTitle(); ?></a>
 <?php foreach ($category->getPhotos() as $photo) : ?>
-	<img class="photo" src="<?php echo $photo; ?>"/>
+  <img class="photo" src="<?php echo $photo; ?>"/>
 <?php endforeach; ?>
 <?php echo $category->getDescription(); ?>
 ]]></template><template name="header"><![CDATA[<style>
-	/* products */
-	div.products {
-		overflow: hidden;
-	}
-	div.products .product {
-		float: left;
-		width: 150px;
-	}
-	/* breadcrumbs */
-	ul.breadcrumbs {
-		margin: 0;
-		padding: 2px;
-		overflow: hidden;
-	}
-	li.breadcrumb {
-		font-size: 75%;
-		float: left;
-		list-style-type: none;
-		padding: 0 5px 0 0;
-	}
-	li.breadcrumb + li.breadcrumb:before {
-		content: ' » ';
-	}
+  /* products */
+  div.products {
+    overflow: hidden;
+  }
+  div.products .product {
+    float: left;
+    width: 150px;
+  }
+  /* breadcrumbs */
+  ul.breadcrumbs {
+    margin: 0;
+    padding: 2px;
+    overflow: hidden;
+  }
+  li.breadcrumb {
+    font-size: 75%;
+    float: left;
+    list-style-type: none;
+    padding: 0 5px 0 0;
+  }
+  li.breadcrumb + li.breadcrumb:before {
+    content: ' » ';
+  }
 </style>
 
 <ul class="breadcrumbs">
-	<?php $catalog->getBreadcrumbs();?>
+  <?php $catalog->getBreadcrumbs();?>
 </ul>]]></template><template name="category"><![CDATA[<div class="product">
-	<a href="<?php echo $product->getUrl(); ?>"><?php echo $product->getField('title'); ?></a>
-	<div class="price">£<?php echo $product->getField('price'); ?></div>
-	<div class="rating">
-		<?php for ($i = 0; $i < $product->getField('rating'); $i++) echo '*'; ?>
-	</div>
-	<div class="stock">
-		<?php
-			if ($product->getField('instock') == 'y') {
-				echo 'In Stock';
-			}
-			else {
-				echo 'Out of Stock';
-			}
-		?>
-	</div>
+  <a href="<?php echo $product->getUrl(); ?>"><?php echo $product->getField('title'); ?></a>
+  <div class="price">£<?php echo $product->getField('price'); ?></div>
+  <div class="rating">
+    <?php for ($i = 0; $i < $product->getField('rating'); $i++) echo '*'; ?>
+  </div>
+  <div class="stock">
+    <?php
+      if ($product->getField('instock') == 'y') {
+        echo 'In Stock';
+      }
+      else {
+        echo 'Out of Stock';
+      }
+    ?>
+  </div>
 </div>]]></template><template name="product"><![CDATA[<div class="product">
-	<script>
-		.price {
-		}
-		.number {
-		}
-		.description {
-		}
-		.widget {
-		}
-	</script>
-	<h3><a href="<?php echo $product->getUrl(); ?>"><?php echo $product->getField('title'); ?></a></h3>
-	<div class="categories">
-		<?php foreach ($product->getCategories() as $category) : ?>
-		<div class="category">
-			<a href="<?php echo $category->getUrl(); ?>">
-				<?php echo $category->getTitle(); ?>
-			</a>
-		</div>
-		<?php endforeach; ?>
-		
-	</div>
-	<div class="price">£<?php echo $product->getField('price'); ?></div>
-	<div class="number"><?php echo $product->getField('number'); ?></div>
-	<div class="description"><?php echo $product->getField('description'); ?></div>
-	<div class="rating">
-		<?php for ($i = 0; $i < $product->getField('rating'); $i++) echo '*'; ?>
-	</div>
-	<div class="stock">
-		<?php
-			if ($product->getField('instock') == 'y') {
-				echo 'In Stock';
-			}
-			else {
-				echo 'Out of Stock';
-			}
-		?>
-	</div>
+  <script>
+    .price {
+    }
+    .number {
+    }
+    .description {
+    }
+    .widget {
+    }
+  </script>
+  <h3><a href="<?php echo $product->getUrl(); ?>"><?php echo $product->getField('title'); ?></a></h3>
+  <div class="categories">
+    <?php foreach ($product->getCategories() as $category) : ?>
+    <div class="category">
+      <a href="<?php echo $category->getUrl(); ?>">
+        <?php echo $category->getTitle(); ?>
+      </a>
+    </div>
+    <?php endforeach; ?>
+
+  </div>
+  <div class="price">£<?php echo $product->getField('price'); ?></div>
+  <div class="number"><?php echo $product->getField('number'); ?></div>
+  <div class="description"><?php echo $product->getField('description'); ?></div>
+  <div class="rating">
+    <?php for ($i = 0; $i < $product->getField('rating'); $i++) echo '*'; ?>
+  </div>
+  <div class="stock">
+    <?php
+      if ($product->getField('instock') == 'y') {
+        echo 'In Stock';
+      }
+      else {
+        echo 'Out of Stock';
+      }
+    ?>
+  </div>
 </div>]]></template><template name="featured"><![CDATA[]]></template><template name="i18nsearch-product"><![CDATA[<h3><?php echo $item->title; ?></h3>]]></template><template name="footer"><![CDATA[]]></template></templates>
