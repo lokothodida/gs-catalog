@@ -1,6 +1,6 @@
 <?php
 if ($general->getWysiwyg() == 'y') {
-  $toolbar = !is_null($GLOBALS['EDTOOL']) ? ", toolbar: '" . trim($GLOBALS['EDTOOL'], ",'") . "'" : '';
+  $toolbar = ', toolbar: "' . $general->getWysiwygToolbar() . '"';
   $options = !is_null($GLOBALS['EDOPTIONS']) ? ',' . trim($GLOBALS['EDOPTIONS'], ",") : '';
 ?>
   <script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
