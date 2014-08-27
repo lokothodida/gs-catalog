@@ -15,7 +15,7 @@ if ($general->getWysiwyg() == 'y') {
       uiColor : '#FFFFFF',
       height: '<?php echo isset($height) ? $height : $GLOBALS['EDHEIGHT']; ?>',
       baseHref : '<?php echo $GLOBALS['SITEURL']; ?>',
-      tabSpaces:10,
+      tabSpaces: 10,
       filebrowserBrowseUrl : 'filebrowser.php?type=all',
       filebrowserImageBrowseUrl : 'filebrowser.php?type=images',
       filebrowserWindowWidth : '730',
