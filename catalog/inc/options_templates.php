@@ -31,12 +31,21 @@
       $isSuccess = false;
     }
   }
-  $general = new CatalogGeneralOptions(GSDATAOTHERPATH . $this->id . '/general.xml');
-  $templates = new CatalogTemplates(GSDATAOTHERPATH . $this->id . '/templates.xml');
+  $general   = new CatalogGeneralOptions(GSDATAOTHERPATH . $this->id . '/general.xml');
+  $templates = new CatalogTemplates(GSDATAOTHERPATH . $this->id . '/templates.xml', GSDATAOTHERPATH . $this->id . '/templates/*.xml');
+  $themes    = $templates->getThemes();
+  $current   = $templates->getCurrentTheme();
   $templates = $templates->getTemplates();
 
 ?>
-
+<!--select theme/template-->
+<p>
+  <select id="theme_select" class="text" style="width:250px;" name="template">
+    <?php foreach ($themes as $theme) : ?>
+    <option <?php if ($theme == $current) echo 'selected="selected"'; ?>value="<?php echo $theme; ?>"><?php echo $theme; ?></option>
+    <?php endforeach; ?>
+  </select>&nbsp;&nbsp;&nbsp;<input class="submit" name="submitted" value="<?php i18n('ACTIVATE_THEME'); ?>" type="submit">
+</p>
 <!-- main catalog page template -->
 <p>
   <h4 style="font-weight: bold;"><?php i18n($this->id . '/MAIN'); ?> : </h4>
