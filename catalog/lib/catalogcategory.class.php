@@ -36,7 +36,7 @@ class CatalogCategory {
       // normal field
       return (string) $this->data[$field];
     } else {
-      return 'boo';
+      return null;
     }
   }
 

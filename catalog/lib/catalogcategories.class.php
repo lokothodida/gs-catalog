@@ -5,6 +5,7 @@ class CatalogCategories {
   private $categories = array();
   private $urls = array();
   private $slugged;
+  private $sort = array('by' => false, 'ascDesc' => false);
   
   public function __construct($dir, $baseurl = null, $slugged) {
     $this->slugged = $slugged;
@@ -41,14 +42,26 @@ class CatalogCategories {
       $category->setParents($this->urls[$id]);
     }
   }
-  
+
   private function sortCategoryOrder(CatalogCategory $a, CatalogCategory $b) {
     return (int) $a->getOrder() - (int) $b->getOrder();
   }
-  
+
+  private function sortCategory(CatalogCategory $a, CatalogCategory $b) {
+    $field = $this->sort['by'];
+    $ord = strcmp($a->getField($field), $b->getField($field));
+
+    return ($this->sort['ascDesc'] == 'asc') ? $ord : -$ord;
+  }
+
   public function getCategories($hierarchy = false, $sort = false) {
     // sorting
-    if ($sort == 'order') {
+    if (is_array($sort)) {
+      $this->sort['by'] = $sort['sortBy'];
+      $this->sort['ascDesc'] = $sort['ascDesc'];
+
+      uasort($this->categories, array($this, 'sortCategory'));
+    } elseif ($sort == 'order') {
       uasort($this->categories, array($this, 'sortCategoryOrder'));
     }
     

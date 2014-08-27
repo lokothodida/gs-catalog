@@ -25,13 +25,21 @@ function gsCatalogInit() {
 
 /* public functions */
 // get categories
-function catalog_get_categories() {
-  // ...
+function catalog_get_categories($sortBy = false, $ascDesc = false) {
+  $id = basename(__FILE__, '.php');
+  $general = new CatalogGeneralOptions(GSDATAOTHERPATH . $id . '/general.xml');
+  $categories = new CatalogCategories(GSDATAOTHERPATH . $id . '/categories/*.xml', $GLOBALS['SITEURL'] . $general->getBaseurl(), ((string) $general->getSlugged() == 'y'));
+
+  return $categories->getCategories(false, array('sortBy' => $sortBy, 'ascDesc' => $ascDesc));
 }
 
 // get category
-function catalog_get_category() {
-  // ...
+function catalog_get_category($categoryId) {
+  $id = basename(__FILE__, '.php');
+  $general = new CatalogGeneralOptions(GSDATAOTHERPATH . $id . '/general.xml');
+  $category = new CatalogCategory(GSDATAOTHERPATH . $id . '/categories/' . $categoryId . '.xml', ((string) $general->getSlugged() == 'y'));
+
+  return $category;
 }
 
 // get products
