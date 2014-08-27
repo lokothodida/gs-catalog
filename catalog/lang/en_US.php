@@ -99,6 +99,7 @@ $i18n = array(
   'BASIC'           => 'Basic',
   'ADVANCED'        => 'Advanced',
   'WYSIWYG'         => 'WYSIWYG Editor',
+  'IMAGE'           => 'Image',
   'CHECKBOX'        => 'Checkbox',
   'INDEX'           => 'Index?',
   'YES'             => 'Yes',
