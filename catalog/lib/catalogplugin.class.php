@@ -197,7 +197,7 @@ class CatalogPlugin {
   
   // creates the necessary directories and files
   private function mkDirs() {
-    $dirs = array('', '/products', 'categories');
+    $dirs = array('', '/products', 'categories', 'templates');
     $defaults = array('general', 'fields', 'templates');
     
     // make all the directories
