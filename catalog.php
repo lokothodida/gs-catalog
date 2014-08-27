@@ -43,14 +43,30 @@ function catalog_get_category($categoryId) {
 }
 
 // get products
-function catalog_get_products() {
-  // ...
+function catalog_get_products($options) {
+  $id = basename(__FILE__, '.php');
+  $general = new CatalogGeneralOptions(GSDATAOTHERPATH . $id . '/general.xml');
+  $fields = new ProductFields(GSDATAOTHERPATH . $id . '/fields.xml');
+
+  $products = new CatalogProducts(GSDATAOTHERPATH . $id . '/products/*.xml', ((string) $general->getSlugged() == 'y'));
+
+  $category = isset($options['category']) ? $options['category'] : false;
+  $search   = isset($options['search']) ? $options['search'] : array();
+  $sort     = isset($options['sort']) ? $options['sort'] : array();
+  $max      = isset($options['max']) ? $options['max'] : false;
+
+  return $products->getProducts($category, $search, $sort, $max);
 }
 
 // get product
-function catalog_get_product() {
-  // ...
+function catalog_get_product($productId) {
+  $id = basename(__FILE__, '.php');
+  $general = new CatalogGeneralOptions(GSDATAOTHERPATH . $id . '/general.xml');
+  $product = new CatalogCategory(GSDATAOTHERPATH . $id . '/products/' . $productId . '.xml', ((string) $general->getSlugged() == 'y'));
+
+  return $product;
 }
+
 // show shopping cart
 function catalog_show_cart() {
   $cart = new CatalogCart(GSDATAOTHERPATH . basename(__FILE__, '.php') . '/cart.xml');
