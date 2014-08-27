@@ -42,18 +42,59 @@
   }
   
   $general = new CatalogGeneralOptions(GSDATAOTHERPATH . $this->id . '/general.xml');
-  //$general = $general->getGeneralOptions();
 ?>
+
+<style>
+  form h3 {
+    font-size: 15px;
+    line-height: 20px;
+  }
+</style>
 
 <p>
   <input type="text" class="text title" name="title" placeholder="<?php i18n($this->id . '/CATALOG_TITLE'); ?>" value="<?php echo $general->getTitle(); ?>"/>
 </p>
 
+<h3><?php i18n($this->id . '/GENERAL'); ?></h3>
 <div class="leftsec">
   <p>
     <label for="slug"><?php i18n($this->id . '/SLUG'); ?>: </label>
     <input class="text" id="slug" name="slug" value="<?php echo $general->getSlug(); ?>" type="text">
   </p>
+  <p class="inline">
+    <input type="checkbox" name="wysiwyg" value="y" <?php if ($general->getWysiwyg() == 'y') echo 'checked="checked"'; ?>>
+    <label for="wysiwyg"><?php i18n('ENABLE_HTML_ED'); ?></label>
+  <p>
+    <label for="wysiwyg"><?php i18n($this->id . '/WYSIWYG_TOOLBAR'); ?>: </label>
+    <select class="text" name="wysiwygtoolbar">
+      <?php foreach (array('basic', 'advanced') as $wysiwygtoolbar) : ?>
+      <option value="<?php echo $wysiwygtoolbar; ?>" <?php if ($general->getWysiwygToolbar() === $wysiwygtoolbar) echo 'selected'; ?>>
+        <?php i18n($this->id . '/WYSIWYG_TOOLBAR_' . strtoupper($wysiwygtoolbar)); ?>
+      </option>
+      <?php endforeach; ?>
+    </select>
+  </p>
+</div>
+
+<div class="rightsec">
+  <p class="inline">
+    <input type="checkbox" name="slugged" value="y" <?php if ($general->getSlugged() == 'y') echo 'checked="checked"'; ?>>
+    <label for="i18nsearch"><?php i18n($this->id . '/SLUGGED'); ?></label>
+  </p>
+  <p class="inline">
+    <input type="checkbox" name="internalsearch" value="y" <?php if ($general->getInternalSearch() == 'y') echo 'checked="checked"'; ?>>
+    <label for="internalsearch"><?php i18n($this->id . '/INTERNAL_SEARCH'); ?></label>
+  </p>
+  <p class="inline">
+    <input type="checkbox" name="i18nsearch" value="y" <?php if ($general->getI18nSearch() == 'y') echo 'checked="checked"'; ?>>
+    <label for="i18nsearch"><?php i18n($this->id . '/I18N_SEARCH'); ?></label>
+  </p>
+</div>
+
+<div class="clear"></div>
+
+<div class="leftsec">
+  <h3><?php i18n($this->id . '/PRODUCTS'); ?></h3>
   <p>
     <label for="productsperpage"><?php i18n($this->id . '/PROD_PERPAGE'); ?>: </label>
     <input class="text" id="productsperpage" name="productsperpage" value="<?php echo $general->getProductsPerPage(); ?>" type="number">
@@ -72,22 +113,10 @@
       </option>
     </select>
   </p>
-  <p>
-    <label for="wysiwyg"><?php i18n('ENABLE_HTML_ED'); ?>: </label>
-    <input type="checkbox" name="wysiwyg" value="y" <?php if ($general->getWysiwyg() == 'y') echo 'checked="checked"'; ?>>
-  </p>
-  <p>
-    <label for="wysiwyg"><?php i18n($this->id . '/WYSIWYG_TOOLBAR'); ?>: </label>
-    <select class="text" name="wysiwygtoolbar">
-      <?php foreach (array('basic', 'advanced') as $wysiwygtoolbar) : ?>
-      <option value="<?php echo $wysiwygtoolbar; ?>" <?php if ($general->getWysiwygToolbar() === $wysiwygtoolbar) echo 'selected'; ?>>
-        <?php i18n($this->id . '/WYSIWYG_TOOLBAR_' . strtoupper($wysiwygtoolbar)); ?>
-      </option>
-      <?php endforeach; ?>
-    </select>
-  </p>
 </div>
+
 <div class="rightsec">
+  <h3><?php i18n($this->id . '/CATEGORIES'); ?></h3>
   <p>
     <label for="categoryview"><?php i18n($this->id . '/CATEGORY_VIEW'); ?>: </label>
     <select class="text" name="categoryview">
@@ -102,20 +131,10 @@
       </option>
     </select>
   </p>
-  <p>
-    <label for="i18nsearch"><?php i18n($this->id . '/SLUGGED'); ?>: </label>
-    <input type="checkbox" name="slugged" value="y" <?php if ($general->getSlugged() == 'y') echo 'checked="checked"'; ?>>
-  </p>
-  <p>
-    <label for="internalsearch"><?php i18n($this->id . '/INTERNAL_SEARCH'); ?>: </label>
-    <input type="checkbox" name="internalsearch" value="y" <?php if ($general->getInternalSearch() == 'y') echo 'checked="checked"'; ?>>
-  </p>
-  <p>
-    <label for="i18nsearch"><?php i18n($this->id . '/I18N_SEARCH'); ?>: </label>
-    <input type="checkbox" name="i18nsearch" value="y" <?php if ($general->getI18nSearch() == 'y') echo 'checked="checked"'; ?>>
-  </p>
 </div>
+
 <div class="clear"></div>
+
 <label for="productsperpage"><?php i18n($this->id . '/ERROR_MESSAGE'); ?>: </label>
 <textarea id="pageerror" name="pageerror" style="height: 200px;"><?php echo $general->getPageError(); ?></textarea>
 
