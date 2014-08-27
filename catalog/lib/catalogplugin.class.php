@@ -197,7 +197,7 @@ class CatalogPlugin {
   
   // creates the necessary directories and files
   private function mkDirs() {
-    $dirs = array('', '/products', 'categories', 'templates');
+    $dirs = array('', '/products', 'categories', 'templates', 'tmp');
     $defaults = array('general', 'fields', 'templates');
     
     // make all the directories
@@ -207,10 +207,17 @@ class CatalogPlugin {
         mkdir($file, 0755, true);
       }
     }
+
     // data/other/catalog/.htaccess (deny all)
     if (!file_exists(GSDATAOTHERPATH . $this->id . '/.htaccess')) {
       file_put_contents(GSDATAOTHERPATH . $this->id . '/.htaccess', 'Deny from all');
     }
+
+    // data/other/catalog/tmp/.htaccess (allow all)
+    if (!file_exists(GSDATAOTHERPATH . $this->id . '/tmp/.htaccess')) {
+      file_put_contents(GSDATAOTHERPATH . $this->id . '/tmp/.htaccess', 'Allow from all');
+    }
+
     // copy defaults
     $this->makeDefaultFiles();
   }
@@ -584,6 +591,7 @@ class CatalogPlugin {
 
     $slugged = (string) $options->general->slugged == 'y' ? true : false;
     $catalogurl = $GLOBALS['SITEURL'] . $general->getBaseurl();
+    $adminUrl = 'load.php?id=' . $this->id;
 
     // products page
     if (isset($_GET['products'])) {
