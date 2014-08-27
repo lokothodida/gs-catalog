@@ -563,13 +563,13 @@ class CatalogPlugin {
     // load settings/options
     $options = new CatalogOptions(GSDATAOTHERPATH . $this->id . '/');
     $options = $options->getOptions();
-    $general = &$options->general;
+    $general = new CatalogGeneralOptions(GSDATAOTHERPATH . $this->id . '/general.xml');
     $templates = &$options->templates;
     $fields = &$options->fields;
-    
+
     $slugged = (string) $options->general->slugged == 'y' ? true : false;
-    $catalogurl = $GLOBALS['SITEURL'] . $general->baseurl;
-    
+    $catalogurl = $GLOBALS['SITEURL'] . $general->getBaseurl();
+
     // products page
     if (isset($_GET['products'])) {
       if ($_GET['products'] == 'create') {
