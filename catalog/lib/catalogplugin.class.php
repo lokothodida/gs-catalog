@@ -221,7 +221,22 @@ class CatalogPlugin {
     foreach ($defaults as $default) {
       $def = $this->root . '/assets/defaults/' . $default . '.xml';
       $f = GSDATAOTHERPATH . $this->id . '/' . $default . '.xml';
-      if (!file_exists($f) || $overwrite) {
+
+      if ($default == 'templates') {
+        // templates
+        // copy core file (that just says the active theme)
+        $success[] = copy($def, $f);
+
+        // copy the basic themes available
+        $themes = glob($this->root . '/assets/defaults/templates/*.xml');
+
+        foreach ($themes as $theme) {
+          $f = GSDATAOTHERPATH . $this->id . '/templates/' . basename($theme);
+          if (!file_exists($f) || $overwrite) {
+            $success[] = copy($theme, $f);
+          }
+        }
+      } elseif (!file_exists($f) || $overwrite) {
         $success[] = copy($def, $f);
       }
     }
