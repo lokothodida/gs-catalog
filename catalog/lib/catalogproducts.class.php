@@ -59,7 +59,7 @@ class CatalogProducts {
     return array_slice($products, ($page - 1) * $max, $max);
   }
 
-  public function getProducts($category = false, $search = false, $sort = array()) {
+  public function getProducts($category = false, $search = false, $sort = array(), $max = false) {
     $products = $this->products;
 
     if ($sort) {
@@ -76,6 +76,10 @@ class CatalogProducts {
     if ($search) {
       $this->searchfilter = $search;
       $products = array_filter($products, array($this, 'filterSearch'));
+    }
+
+    if ($max) {
+      $products = array_slice($products, 0, $max);
     }
 
     return $products;
