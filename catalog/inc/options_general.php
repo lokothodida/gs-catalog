@@ -59,7 +59,7 @@
     </select>
   </p>
   <p>
-    <label for="wysiwyg"><?php i18n($this->id . '/WYSIWYG_ENABLE'); ?>: </label>
+    <label for="wysiwyg"><?php i18n('ENABLE_HTML_ED'); ?>: </label>
     <input type="checkbox" name="wysiwyg" value="y" <?php if ($general->getWysiwyg() == 'y') echo 'checked="checked"'; ?>>
   </p>
   <p>
