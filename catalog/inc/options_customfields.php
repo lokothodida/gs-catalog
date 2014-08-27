@@ -45,6 +45,7 @@ $fieldHtml = '
       <option value="text">' . i18n_r($this->id . '/TEXT') . '</option>
       <option value="textarea">' . i18n_r($this->id . '/TEXTAREA') . '</option>
       <option value="wysiwyg">' . i18n_r($this->id . '/WYSIWYG') . '</option>
+      <option value="image">' . i18n_r($this->id . '/IMAGE') . '</option>
       <option value="codeeditor">' . i18n_r($this->id . '/CODEEDITOR') . '</option>
       <option value="checkbox">' . i18n_r($this->id . '/CHECKBOX') . '</option>
     </select>

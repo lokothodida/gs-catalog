@@ -65,6 +65,10 @@
         $height = 200;
         include('ckeditor.php');
       }
+//TZV addition
+      elseif ($field->type == 'image') {
+        echo '<input type="text" class="text" name="' . $field->name . '" id="' . $field->name . '" value="' . $value . '" onClick=\'window.open("../admin/filebrowser.php?CKEditorFuncNum=1&returnid=' . $field->name . '&type=images","mywindow","width=600,height=500")\'>';
+      }
       elseif ($field->type == 'checkbox') {
         echo '<input type="checkbox" id="' . $field->name . '" name="' . $field->name . '" value="y" ' . (($value == 'y') ? 'checked="checked"' : null) . '/>';
       }
