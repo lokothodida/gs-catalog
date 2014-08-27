@@ -9,6 +9,15 @@
   }
 </style>
 <?php
+  if (isset($_GET['export'])) {
+    $template = $_GET['export'] . '.xml';
+    $templatesDir = GSDATAOTHERPATH . $this->id . '/templates/' . $template;
+    $tmpDir = GSDATAOTHERPATH . $this->id . '/tmp/' . $template;
+
+    copy($templatesDir, $tmpDir);
+
+    $exportFile = str_replace(GSROOTPATH, $GLOBALS['SITEURL'], $tmpDir);
+  }
   // saved
   if (isset($_POST['submitted'])) {
     $fields = array('main', 'header', 'category', 'product', 'featured', 'i18nsearch-product', 'footer');
@@ -18,7 +27,7 @@
       $xml->template[$k]->addAttribute('name', $field);
       $xml->template[$k]->addCData($_POST[$field]);
     }
-    $succ = (bool) $xml->saveXML(GSDATAOTHERPATH . $this->id . '/templates.xml');
+    $succ = (bool) $xml->saveXML(GSDATAOTHERPATH . $this->id . '/templates/' . $_POST['current'] . '.xml');
     
     // success
     if ($succ) {
@@ -31,6 +40,7 @@
       $isSuccess = false;
     }
   }
+
   $general   = new CatalogGeneralOptions(GSDATAOTHERPATH . $this->id . '/general.xml');
   $templates = new CatalogTemplates(GSDATAOTHERPATH . $this->id . '/templates.xml', GSDATAOTHERPATH . $this->id . '/templates/*.xml');
   $themes    = $templates->getThemes();
@@ -39,13 +49,36 @@
 
 ?>
 <!--select theme/template-->
+<?php if (isset($_GET['export']) && isset($template)) : ?>
+  <script>
+  $(document).ready(function() {
+    window.open('<?php echo $exportFile; ?>');
+  });
+  </script>
+<?php endif; ?>
+<input type="hidden" name="current" value="<?php echo $current; ?>"/>
 <p>
   <select id="theme_select" class="text" style="width:250px;" name="template">
     <?php foreach ($themes as $theme) : ?>
     <option <?php if ($theme == $current) echo 'selected="selected"'; ?>value="<?php echo $theme; ?>"><?php echo $theme; ?></option>
     <?php endforeach; ?>
-  </select>&nbsp;&nbsp;&nbsp;<input class="submit" name="submitted" value="<?php i18n('ACTIVATE_THEME'); ?>" type="submit">
+  </select>&nbsp;&nbsp;&nbsp;
+  <input class="submit" name="submitted" value="<?php i18n('ACTIVATE_THEME'); ?>" type="submit">
+
+  <input class="submit import" name="import" value="<?php i18n($this->id . '/IMPORT'); ?>" type="submit">
+  <input class="submit export" name="export" value="<?php i18n($this->id . '/EXPORT'); ?>" type="submit">
 </p>
+
+
+<script>
+$(document).ready(function() {
+  $('.export').click(function() {
+    window.location = '<?php echo $adminUrl; ?>&options=templates&export=' + $('#theme_select').val();
+    return false;
+  });
+});
+</script>
+
 <!-- main catalog page template -->
 <p>
   <h4 style="font-weight: bold;"><?php i18n($this->id . '/MAIN'); ?> : </h4>
