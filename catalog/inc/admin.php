@@ -28,7 +28,10 @@
 <h3><?php i18n($this->id . '/HOME'); ?></h3>
 <ul>
   <li>
-    <a href="<?php echo $GLOBALS['SITEURL'] . $general->slug; ?>/" target="_blank"><?php i18n($this->id . '/CATALOG'); ?></a>
+    <a href="<?php echo $GLOBALS['SITEURL'] . $general->getSlug(); ?>/" target="_blank"><?php i18n($this->id . '/CATALOG'); ?></a>
+  </li>
+  <li>
+    <a href="https://github.com/lokothodida/gs-catalog/wiki" target="_blank"><?php i18n('SIDE_DOCUMENTATION'); ?></a>
   </li>
   <li>
     <a href="load.php?id=<?php echo $this->id; ?>&home=resetoptions" onclick="resetOptions(); return false;"><?php i18n($this->id . '/RESET_OPTIONS'); ?></a>
