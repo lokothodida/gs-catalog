@@ -69,7 +69,7 @@
     <select class="text" name="wysiwygtoolbar">
       <?php foreach (array('basic', 'advanced') as $wysiwygtoolbar) : ?>
       <option value="<?php echo $wysiwygtoolbar; ?>" <?php if ($general->getWysiwygToolbar() === $wysiwygtoolbar) echo 'selected'; ?>>
-        <?php i18n($this->id . '/WYSIWYG_TOOLBAR_' . strtoupper($wysiwygtoolbar)); ?>
+        <?php i18n($this->id . '/' . strtoupper($wysiwygtoolbar)); ?>
       </option>
       <?php endforeach; ?>
     </select>
