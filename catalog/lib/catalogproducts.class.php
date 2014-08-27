@@ -5,6 +5,7 @@ class CatalogProducts {
   private $fields;
   private $catfilter = null;
   private $searchfilter = null;
+  private $sort = array();
   private $slugged;
 
   public function __construct($files, $fields = null, $slugged) {
@@ -37,12 +38,35 @@ class CatalogProducts {
     return false;
   }
 
+  private function sort(CatalogProduct $a, CatalogProduct $b) {
+    $score = 0;
+
+    // run through each sorting field, aggregating the score
+    foreach ($this->sort as $field => $ascDesc) {
+      // check field values
+      $af = $a->getField($field);
+      $bf = $b->getField($field);
+
+      // compare numbers if the values are numeric; strings otherwise
+      $comparison = (is_numeric($af) && is_numeric($bf)) ? cmp($af, $bf) : strcmp($af, $bf);
+      $score += $ascDesc == 'asc' ? $comparison : -$comparison;
+    }
+
+    return $score;
+  }
+
   private function paginate(array $products, $max, $page) {
     return array_slice($products, ($page - 1) * $max, $max);
   }
 
-  public function getProducts($category = false, $search = false) {
+  public function getProducts($category = false, $search = false, $sort = array()) {
     $products = $this->products;
+
+    if ($sort) {
+      $this->sort = $sort;
+
+      uasort($products, array($this, 'sort'));
+    }
 
     if ($category) {
       $this->catfilter = $category;
