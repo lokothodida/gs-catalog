@@ -58,6 +58,20 @@
       </option>
     </select>
   </p>
+  <p>
+    <label for="wysiwyg"><?php i18n($this->id . '/WYSIWYG_ENABLE'); ?>: </label>
+    <input type="checkbox" name="wysiwyg" value="y" <?php if ($general->getWysiwyg() == 'y') echo 'checked="checked"'; ?>>
+  </p>
+  <p>
+    <label for="wysiwyg"><?php i18n($this->id . '/WYSIWYG_TOOLBAR'); ?>: </label>
+    <select class="text" name="wysiwygtoolbar">
+      <?php foreach (array('basic', 'advanced') as $wysiwygtoolbar) : ?>
+      <option value="<?php echo $wysiwygtoolbar; ?>" <?php if ($general->getWysiwygToolbar() === $wysiwygtoolbar) echo 'selected'; ?>>
+        <?php i18n($this->id . '/WYSIWYG_TOOLBAR_' . strtoupper($wysiwygtoolbar)); ?>
+      </option>
+      <?php endforeach; ?>
+    </select>
+  </p>
 </div>
 <div class="rightsec">
   <p>
