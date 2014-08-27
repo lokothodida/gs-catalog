@@ -1,7 +1,21 @@
 <?php
   // saved
   if (isset($_POST['submitted'])) {
-    $fields = array('title', 'slug', 'productsperpage', 'pagination', 'view', 'categoryview', 'pageerror', 'internalsearch', 'i18nsearch', 'slugged');
+    $fields = array(
+      'title',
+      'slug',
+      'productsperpage',
+      'pagination',
+      'view',
+      'categoryview',
+      'pageerror',
+      'internalsearch',
+      'i18nsearch',
+      'slugged',
+      // editor(s)
+      'wysiwyg',
+      'wysiwygtoolbar',
+      );
     $xml = new SimpleXMLExtended('<options/>');
     foreach ($fields as $k => $field) {
       $xml->{$field} = null;
