@@ -1,5 +1,5 @@
 <?php
-if ($options->getWysiwyg() == 'y') {
+if ($general->getWysiwyg() == 'y') {
   $toolbar = !is_null($GLOBALS['EDTOOL']) ? ", toolbar: '" . trim($GLOBALS['EDTOOL'], ",'") . "'" : '';
   $options = !is_null($GLOBALS['EDOPTIONS']) ? ',' . trim($GLOBALS['EDOPTIONS'], ",") : '';
 ?>
