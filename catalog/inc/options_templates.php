@@ -33,6 +33,8 @@
 
       $xml->current = null;
       $xml->current->addCData($_GET['activate']);
+
+      $xml->saveXML($file);
     } else {
       // theme/template does not exist
     }
