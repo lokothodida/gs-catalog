@@ -20,7 +20,7 @@ class CatalogOptions {
   }
   
   public function getTemplates($dir) {
-    $obj = new CatalogTemplates($dir . 'templates.xml');
+    $obj = new CatalogTemplates($dir . 'templates.xml', $dir . '/templates/*.xml');
     $this->options->templates = $obj->getTemplates();
   }
   

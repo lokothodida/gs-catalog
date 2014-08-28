@@ -1,3 +1,16 @@
 <?xml version="1.0"?>
-<options><title><![CDATA[Just Another GetSimple Catalog]]></title><slug><![CDATA[catalog]]></slug><productsperpage><![CDATA[6]]></productsperpage><pagination><![CDATA[both]]></pagination><view><![CDATA[detailed]]></view><categoryview><![CDATA[hierarchical]]></categoryview><pageerror><![CDATA[<p>Sorry, no products here</p>
-]]></pageerror><slugged><![CDATA[y]]></slugged><internalsearch><![CDATA[]]></internalsearch><i18nsearch><![CDATA[]]></i18nsearch></options>
+<options>
+  <title><![CDATA[Just Another GetSimple Catalog]]></title>
+  <slug><![CDATA[catalog]]></slug>
+  <productsperpage><![CDATA[6]]></productsperpage>
+  <pagination><![CDATA[both]]></pagination>
+  <view><![CDATA[detailed]]></view>
+  <categoryview><![CDATA[hierarchical]]></categoryview>
+  <pageerror><![CDATA[<p>Sorry, no products here</p>]]></pageerror>
+  <slugged><![CDATA[y]]></slugged>
+  <internalsearch><![CDATA[]]></internalsearch>
+  <i18nsearch><![CDATA[]]></i18nsearch>
+  <wysiwyg><![CDATA[y]]></wysiwyg>
+  <wysiwygtoolbar><![CDATA[basic]]></wysiwygtoolbar>
+  <wysiwygoptions><![CDATA[]]></wysiwygoptions>
+</options>

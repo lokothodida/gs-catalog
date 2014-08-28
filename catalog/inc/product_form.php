@@ -54,25 +54,25 @@
       // fill in value
       $value = $product->getField($field->name) ? $product->getField($field->name) : $field->default;
       if ($field->type == 'codeeditor') {
+        // codeeditor
         echo '<textarea id="' . $field->name . '" name="' . $field->name . '" style="height: 200px !important;">' . $value . '</textarea>';
         $textarea = $field->name;
         $height = 200;
         include('codemirror.php');
-      }
-      elseif ($field->type == 'wysiwyg') {
+      } elseif ($field->type == 'wysiwyg') {
+        // wysiwyg/html editor
         echo '<textarea id="' . $field->name . '" name="' . $field->name . '">' . $value . '</textarea>';
         $textarea = $field->name;
         $height = 200;
         include('ckeditor.php');
-      }
-//TZV addition
-      elseif ($field->type == 'image') {
+      } elseif ($field->type == 'image') {
+        // image field (by Tzvook)
         echo '<input type="text" class="text" name="' . $field->name . '" id="' . $field->name . '" value="' . $value . '" onClick=\'window.open("../admin/filebrowser.php?CKEditorFuncNum=1&returnid=' . $field->name . '&type=images","mywindow","width=600,height=500")\'>';
-      }
-      elseif ($field->type == 'checkbox') {
+      } elseif ($field->type == 'checkbox') {
+        // checkbox
         echo '<input type="checkbox" id="' . $field->name . '" name="' . $field->name . '" value="y" ' . (($value == 'y') ? 'checked="checked"' : null) . '/>';
-      }
-      else {
+      } else {
+        // text
         echo '<input type="text" class="text" name="' . $field->name . '" value="' . $value . '">';
       }
       echo '</p>';

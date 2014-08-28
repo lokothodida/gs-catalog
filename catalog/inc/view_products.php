@@ -92,9 +92,16 @@
   <p>
     <label for="category"><?php i18n($this->id . '/CATEGORY'); ?> : </label>
     <select class="text" id="selectcategory" onchange="changeCategory(this)" name="category" style="width: 200px;">
-      <option value="all"><?php i18n($this->id . '/VIEW_ALL'); ?></option>
+      <option value="all" <?php if (isset($_GET['filter']) && $_GET['filter'] == 'all') echo 'selected="selected"'; ?>>
+        <?php i18n($this->id . '/VIEW_ALL'); ?>
+      </option>
+      <option value="" <?php if (isset($_GET['filter']) && $_GET['filter'] == '') echo 'selected="selected"'; ?>>
+        <?php i18n($this->id . '/NO_CATEGORIES'); ?>
+      </option>
       <?php foreach ($categories as $category) : ?>
-      <option value="<?php echo $category->getId(); ?>" <?php if (isset($_GET['filter']) && $_GET['filter'] == (string) $category->getId()) echo 'selected'; ?>><?php echo $category->getTitle(); ?></option>
+      <option value="<?php echo $category->getId(); ?>" <?php if (isset($_GET['filter']) && $_GET['filter'] == (string) $category->getId()) echo 'selected="selected"'; ?>>
+        <?php echo $category->getTitle(); ?>
+      </option>
       <?php endforeach; ?>
     </select>
   </p>

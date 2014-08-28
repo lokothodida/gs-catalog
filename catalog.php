@@ -1,26 +1,73 @@
 <?php
 
-// include main class
-include(basename(__FILE__, '.php') . '/lib/catalogplugin.class.php');
+/* immediately invoked function to initialize and register the plugin */
+function gsCatalogInit() {
+  // get plugin id and construct a root path
+  $id   = basename(__FILE__, ".php");
+  $root = GSPLUGINPATH . $id . '/';
 
-// first instantiate the plugin object
-$catalogplugin = new CatalogPlugin(basename(__FILE__, '.php'));
+  // load the main plugin class and get its name
+  include($root . 'lib/catalogplugin.class.php');
+  $classes = get_declared_classes();
+  $class = end($classes);
 
-// autoload the classes, then load the language files
-$catalogplugin->autoload();
-$catalogplugin->i18nMerge();
+  // first instantiate the plugin object
+  $plugin = new $class($id, $root);
 
-// set the registration properties then register the plugin
-$catalogplugin->title    = 'PLUGIN_TITLE';
-$catalogplugin->version  = '0.1';
-$catalogplugin->author   = 'Lawrence Okoth-Odida';
-$catalogplugin->website  = 'http://www.lokida.co.uk/';
-$catalogplugin->desc     = 'PLUGIN_DESC';
-$catalogplugin->admin    = 'back';
-$catalogplugin->register();
-$catalogplugin->init();
+  // autoload the classes, then load the language files
+  $plugin->autoload();
+  $plugin->i18nMerge();
 
+  // set the registration properties then register the plugin
+  $plugin->register();
+  $plugin->init();
+} gsCatalogInit();
 
+/* public functions */
+// get categories
+function catalog_get_categories($sortBy = false, $ascDesc = false) {
+  $id = basename(__FILE__, '.php');
+  $general = new CatalogGeneralOptions(GSDATAOTHERPATH . $id . '/general.xml');
+  $categories = new CatalogCategories(GSDATAOTHERPATH . $id . '/categories/*.xml', $GLOBALS['SITEURL'] . $general->getBaseurl(), ((string) $general->getSlugged() == 'y'));
+
+  return $categories->getCategories(false, array('sortBy' => $sortBy, 'ascDesc' => $ascDesc));
+}
+
+// get category
+function catalog_get_category($categoryId) {
+  $id = basename(__FILE__, '.php');
+  $general = new CatalogGeneralOptions(GSDATAOTHERPATH . $id . '/general.xml');
+  $category = new CatalogCategory(GSDATAOTHERPATH . $id . '/categories/' . $categoryId . '.xml', ((string) $general->getSlugged() == 'y'));
+
+  return $category;
+}
+
+// get products
+function catalog_get_products($options) {
+  $id = basename(__FILE__, '.php');
+  $general = new CatalogGeneralOptions(GSDATAOTHERPATH . $id . '/general.xml');
+  $fields = new ProductFields(GSDATAOTHERPATH . $id . '/fields.xml');
+
+  $products = new CatalogProducts(GSDATAOTHERPATH . $id . '/products/*.xml', ((string) $general->getSlugged() == 'y'));
+
+  $category = isset($options['category']) ? $options['category'] : false;
+  $search   = isset($options['search']) ? $options['search'] : array();
+  $sort     = isset($options['sort']) ? $options['sort'] : array();
+  $max      = isset($options['max']) ? $options['max'] : false;
+
+  return $products->getProducts($category, $search, $sort, $max);
+}
+
+// get product
+function catalog_get_product($productId) {
+  $id = basename(__FILE__, '.php');
+  $general = new CatalogGeneralOptions(GSDATAOTHERPATH . $id . '/general.xml');
+  $product = new CatalogCategory(GSDATAOTHERPATH . $id . '/products/' . $productId . '.xml', ((string) $general->getSlugged() == 'y'));
+
+  return $product;
+}
+
+// show shopping cart
 function catalog_show_cart() {
   $cart = new CatalogCart(GSDATAOTHERPATH . basename(__FILE__, '.php') . '/cart.xml');
   if ($cart->getEnabled() == 'y') {
