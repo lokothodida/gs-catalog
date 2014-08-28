@@ -9,7 +9,7 @@ class CatalogPlugin {
     $this->id = $id;
     $this->root = $dir;
     $this->title    = 'PLUGIN_TITLE';
-    $this->version  = '0.2';
+    $this->version  = '0.3';
     $this->author   = 'Lawrence Okoth-Odida';
     $this->website  = 'https://github.com/lokothodida/';
     $this->desc     = 'PLUGIN_DESC';
