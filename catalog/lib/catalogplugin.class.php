@@ -185,9 +185,8 @@ class CatalogPlugin {
       $options = new CatalogOptions(GSDATAOTHERPATH . $this->id . '/');
       $options = $options->getOptions();
       $templates = &$options->templates;
-      
-      var_dump($item);
-      echo '<h3><a href="">Title: '. $item->title . '</a></h3>';
+      $product = $item->CatalogProduct;
+
       eval('?>' . $templates['i18nsearch-product']);
       
       return true;

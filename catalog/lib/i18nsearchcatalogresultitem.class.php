@@ -7,32 +7,20 @@ class I18nSearchCatalogResultItem extends I18nSearchResultItem {
   
   protected function get($name) {
     // get the entry
-    $id = substr($this->id, 4);
-    $product = GSDATAOTHERPATH . 'catalog/products/' . $id . '.xml';
-    
-    if (file_exists($product)) {
-      /*
-      if (!$this->categories) {
-        $this->categories = new CatalogCategories(GSDATAOTHERPATH . 'catalog/categories/*.xml', $GLOBALS['SITEURL'] . $general->baseurl, ((string) $general->slugged == 'y' ? true : false));
-        $this->categories = $this->categories->getCategories();
-      }
-      */
-      
-      $this->data = new CatalogProduct(GSDATAOTHERPATH . 'catalog/products/' . $id .'.xml', null, false);
-      foreach ($this->data->getField('categories')->category as $cat) {
-        //$this->data->setCategory($categories[(string) $cat]);
-      }
-    
-      //$this->data = (array) simplexml_load_file($product);
-    }
-    else return null;
-  
+    $productId = substr($this->id, 4);
+    $catalogId = basename(dirname(dirname(__DIR__)));
+
+    $general = new CatalogGeneralOptions(GSDATAOTHERPATH . $catalogId . '/general.xml');
+    $this->product = new CatalogCategory(GSDATAOTHERPATH . $catalogId . '/products/' . $productId . '.xml', ((string) $general->getSlugged() == 'y'));
+    $this->product->setParents();
+
     switch ($name) {
-      case 'title':       return @$this->data->getField('title');
-      case 'description': return @$this->data->getField('description');
-      case 'content':     return '<p>' . htmlspecialchars($this->data['categories']) . '</p>';
-      case 'link':        return null; 
-      default:            return @$this->data->getField($name); 
+      case 'CatalogProduct':  return @$this->product;
+      case 'title':           return @$this->product->getField('title');
+      case 'description':     return @$this->product->getField('description');
+      case 'content':         return @$this->product->getField('description');
+      case 'link':            return @$this->product->getField('url');
+      default:                return @$this->product->getField($name);
     }
   }
 }
