@@ -229,20 +229,20 @@ class CatalogPlugin {
       $def = $this->root . '/assets/defaults/' . $default . '.xml';
       $f = GSDATAOTHERPATH . $this->id . '/' . $default . '.xml';
 
+      if (!file_exists($f) || $overwrite) {
+        $success[] = copy($def, $f);
+      }
+
       if ($default == 'templates') {
         // copy the basic themes available
         $themes = glob($this->root . '/assets/defaults/templates/*.xml');
 
         foreach ($themes as $theme) {
-          $f = GSDATAOTHERPATH . $this->id . '/templates/' . basename($theme);
-          if (!file_exists($f) || $overwrite) {
-            $success[] = copy($theme, $f);
+          $themef = GSDATAOTHERPATH . $this->id . '/templates/' . basename($theme);
+          if (!file_exists($themef) || $overwrite) {
+            $success[] = copy($theme, $themef);
           }
         }
-      }
-
-      if (!file_exists($f) || $overwrite) {
-        $success[] = copy($def, $f);
       }
     }
 
