@@ -4,11 +4,11 @@
     $xml = new SimpleXMLExtended('<product/>');
     $fields = new ProductFields(GSDATAOTHERPATH . $this->id . '/fields.xml');
     $fields = $fields->getFields();
-
+    
     // title
     $xml->title = null;
     $xml->title->addCData($_POST['title']);
-
+    
     // categories
     $xml->categories = null;
     if (isset($_POST['categories']) && is_array($_POST['categories'])) {
@@ -16,7 +16,7 @@
         $xml->categories->category[$k] = $cat;
       }
     }
-
+    
     // custom fields
     foreach ($fields as $field) {
       if (isset($_POST[$field->name])) {
@@ -76,31 +76,17 @@
       $isSuccess = false;
     }
   }
-
-  // load categories
-  $categoriesParams = array(
-    'wildcard' => $this->dataDir . '/categories/*.xml',
-    'settings' => $this->settings,
-  );
-
-  $categories = new CatalogCategories($categoriesParams);
+  
+  $categories = new CatalogCategories(GSDATAOTHERPATH . $this->id . '/categories/*.xml', $catalogurl, $slugged);
   $categories = $categories->getCategories();
-
-  // load products
-  $productsParams = array(
-    'wildcard' => $this->dataDir . '/products/*.xml',
-    'settings' => $this->settings,
-  );
-
-  $products = new CatalogProducts($productsParams);
-
+  $products = new CatalogProducts(GSDATAOTHERPATH . $this->id . '/products/*.xml', null, $slugged);
   $filter = isset($_GET['filter']) && $_GET['filter'] != 'all' ? $_GET['filter'] : false;
-  $prods = $products->getProducts(array('filter' => $filter));
+  $prods = $products->getProducts($filter);
 ?>
 <form>
   <h3 class="floated"><?php i18n($this->id . '/PRODUCTS'); ?></h3>
   <div class="edit-nav clearfix">
-    <a href="load.php?id=<?php echo $this->id; ?>&products=create"><?php i18n($this->id . '/CREATE_PRODUCT'); ?></a>
+	  <a href="load.php?id=<?php echo $this->id; ?>&products=create"><?php i18n($this->id . '/CREATE_PRODUCT'); ?></a>
   </div>
 
   <p>
@@ -113,8 +99,8 @@
         <?php i18n($this->id . '/NO_CATEGORIES'); ?>
       </option>
       <?php foreach ($categories as $category) : ?>
-      <option value="<?php echo $category->getField('id'); ?>" <?php if (isset($_GET['filter']) && $_GET['filter'] == (string) $category->getField('id')) echo 'selected="selected"'; ?>>
-        <?php echo $category->getField('title'); ?>
+      <option value="<?php echo $category->getId(); ?>" <?php if (isset($_GET['filter']) && $_GET['filter'] == (string) $category->getId()) echo 'selected="selected"'; ?>>
+        <?php echo $category->getTitle(); ?>
       </option>
       <?php endforeach; ?>
     </select>
@@ -140,7 +126,7 @@
         <td><a href="load.php?id=<?php echo $this->id; ?>&products=<?php echo $product->getField('id'); ?>"><?php echo $product->getField('title'); ?></a></td>
         <td>
           <?php
-            foreach ($product->getField('categories') as $category) {
+            foreach ($product->getField('categories')->category as $category) {
               if (isset($categories[(string) $category])) {
                 $product->setUrl($categories[(string) $category]);
                 echo '<li><a href="' . $product->getUrl() . '" target="_blank">'. $categories[(string) $category]->getTitle() . '</a></li>';

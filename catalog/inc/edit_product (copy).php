@@ -4,11 +4,11 @@
     $xml = new SimpleXMLExtended('<product/>');
     $fields = new ProductFields(GSDATAOTHERPATH . $this->id . '/fields.xml');
     $fields = $fields->getFields();
-
+    
     // title
     $xml->title = null;
     $xml->title->addCData($_POST['title']);
-
+    
     // categories
     $xml->categories = null;
     if (!empty($_POST['categories'])) {
@@ -16,7 +16,7 @@
         $xml->categories->category[$k] = $cat;
       }
     }
-
+    
     // custom fields
     foreach ($fields as $field) {
       if (isset($_POST[$field->name])) {
@@ -29,7 +29,7 @@
         $xml->{$field->name}->addCData('n');
       }
     }
-
+    
     // save xml file
     $succ = (bool) $xml->saveXML(GSDATAOTHERPATH . $this->id . '/products/' . $_GET['products'] . '.xml');
     
@@ -43,43 +43,19 @@
       $isSuccess = false;
     }
   }
-
-  // load categories
-  $categoriesParams = array(
-    'wildcard' => $this->dataDir . '/categories/*.xml',
-    'settings' => $this->settings,
-  );
-
-  $categories = new CatalogCategories($categoriesParams);
-  $categories = $categories->getCategories();
-
-  // load products
-  $productsParams = array(
-    'wildcard' => $this->dataDir . '/products/*.xml',
-    'settings' => $this->settings,
-  );
-  $products = new CatalogProducts($productsParams);
-
-  $productParams = array(
-    'file'     => $this->dataDir . '/products/' . $_GET['products'] . '.xml',
-    'settings' => $this->settings,
-  );
-  $product = new CatalogProduct($productParams);
-
-  /*
+  
   // load categories and products
   $categories = new CatalogCategories(GSDATAOTHERPATH . $this->id . '/categories/*.xml', $catalogurl, $slugged);
   $categories = $categories->getCategories();
   $products = new CatalogProducts(GSDATAOTHERPATH . $this->id . '/products/*.xml', null, $slugged);
   $products = $products->getProducts();
   $product = $products[$_GET['products']];
-  */
 ?>
 <h3><?php i18n($this->id . '/EDIT_PRODUCT'); ?></h3>
 <form action="" method="post">
   <?php include('product_form.php'); ?>
   <p id="submit_line">
-    <span><input class="submit" name="submitted" value="<?php i18n('BTN_SAVECHANGES'); ?>" type="submit"></span>
-    &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="load.php?id=<?php echo $this->id; ?>&products"><?php i18n('CANCEL'); ?></a>
-  </p>
+		<span><input class="submit" name="submitted" value="<?php i18n('BTN_SAVECHANGES'); ?>" type="submit"></span>
+		&nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="load.php?id=<?php echo $this->id; ?>&products"><?php i18n('CANCEL'); ?></a>
+	</p>
 </form>

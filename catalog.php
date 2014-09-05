@@ -7,12 +7,16 @@ function gsCatalogInit() {
   $root = GSPLUGINPATH . $id . '/';
 
   // load the main plugin class and get its name
-  include($root . 'lib/catalogplugin.class.php');
+  include($root . 'lib/Plugin.php');
   $classes = get_declared_classes();
   $class = end($classes);
+  $params = array(
+    'id' => $id,
+    'pluginDir' => $root,
+  );
 
   // first instantiate the plugin object
-  $plugin = new $class($id, $root);
+  $plugin = new $class($params);
 
   // autoload the classes, then load the language files
   $plugin->autoload();
@@ -62,7 +66,7 @@ function catalog_get_products($options) {
 function catalog_get_product($productId) {
   $id = basename(__FILE__, '.php');
   $general = new CatalogGeneralOptions(GSDATAOTHERPATH . $id . '/general.xml');
-  $product = new CatalogCategory(GSDATAOTHERPATH . $id . '/products/' . $productId . '.xml', ((string) $general->getSlugged() == 'y'));
+  $product = new CatalogProduct(GSDATAOTHERPATH . $id . '/products/' . $productId . '.xml', ((string) $general->getSlugged() == 'y'));
 
   return $product;
 }

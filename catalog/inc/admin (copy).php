@@ -1,7 +1,7 @@
 <?php
   // reset options
   if ($_GET['home'] == 'resetoptions') {
-    $succ = $this->setup->makeDefaultFiles(true);
+    $succ = $this->makeDefaultFiles(true);
     if (!in_array(false, $succ)) {
       $msg = i18n_r($this->id . '/RESET_OP_SUCC');
       $isSuccess = true;
@@ -13,7 +13,7 @@
   }
   // clear the catalog
   elseif ($_GET['home'] == 'clearcatalog') {
-    $succ = $this->setup->clearCatalog();
+    $succ = $this->clearCatalog();
     if (!in_array(false, $succ)) {
       $msg = i18n_r($this->id . '/CLEAR_CAT_SUCC');
       $isSuccess = true;
@@ -28,7 +28,7 @@
 <h3><?php i18n($this->id . '/HOME'); ?></h3>
 <ul>
   <li>
-    <a href="<?php echo $generalSettings->get('url'); ?>" target="_blank"><?php i18n($this->id . '/CATALOG'); ?></a>
+    <a href="<?php echo $GLOBALS['SITEURL'] . $general->getSlug(); ?>/" target="_blank"><?php i18n($this->id . '/CATALOG'); ?></a>
   </li>
   <li>
     <a href="https://github.com/lokothodida/gs-catalog/wiki" target="_blank"><?php i18n('SIDE_DOCUMENTATION'); ?></a>

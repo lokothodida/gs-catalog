@@ -332,7 +332,29 @@ class CatalogPlugin {
 
   // front-end callback
   public function front() {
-    global $data_index;
+    $options = new CatalogOptions(GSDATAOTHERPATH . $this->id . '/');
+    $options = $options->getOptions();
+    $fullurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    $slugged = (string) $options->general->slugged == 'y';
+    $url     = new CatalogRouter($fullurl, $GLOBALS['SITEURL'], $slugged);
+
+    $params  = $url->getParams($slugged);
+
+    var_dump($params);
+
+    $routerParams = array();
+    $renderParams = array(
+      'data' => &$GLOBALS['data_index'],
+      'type' => null,
+      'params' => array(),
+    );
+
+    //$router = new CatalogRouter($routerParams);
+
+    $render = new CatalogRender($renderParams);
+    $render->render();
+
+    return false;
 
     $options = new CatalogOptions(GSDATAOTHERPATH . $this->id . '/');
     $options = $options->getOptions();

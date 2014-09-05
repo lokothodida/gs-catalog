@@ -1,5 +1,4 @@
 <?php
-
   // create new category
   if (isset($_POST['submitted'])) {
     $xml = new SimpleXMLExtended('<category/>');
@@ -9,32 +8,29 @@
         $xml->{$field} = null;
         if ($field == 'photo') {
           foreach ($_POST[$field] as $k => $v) $xml->photos->photo[$k] = $v;
-        } else {
+        }
+        else {
           $xml->{$field}->addCData($_POST[$field]);
         }
       }
     }
-
+    
     // save the file if name doesn't cause a clash
-    $identifiers = simplexml_load_file($this->dataDir . '/identifiers.xml');
-
-    $slug = $this->setup->toSlug($_POST['slug']);
-    $title = $this->setup->toSlug($_POST['title']);
-    $name = empty($slug) ? $title : $slug;
-    $filename = $this->dataDir . '/categories/' . $identifiers->categories . '-' . $name . '.xml';
-
-    if ($name && !file_exists($filename)) {
+    $identifiers = simplexml_load_file(GSDATAOTHERPATH . $this->id . '/identifiers.xml');
+    $filename = GSDATAOTHERPATH . $this->id . '/categories/' . $identifiers->categories . '-' . $this->toSlug($_POST['title']) . '.xml';
+    if ($this->toSlug($_POST['title']) && !file_exists($filename)) {
       $succ = (bool) $xml->saveXML($filename);
       $identifiers->categories = ((int) $identifiers->categories) + 1;
-      $identifiers->saveXML($this->dataDir . '/identifiers.xml');
-    } else {
+      $identifiers->saveXML(GSDATAOTHERPATH . $this->id . '/identifiers.xml');
+    }
+    else {
       $msg = i18n_r($this->id . '/CAT_NAMEEXISTS');
       $succ = false;
     }
     
     // success
     if ($succ) {
-      $this->setup->deleteI18nSearchIndex();
+      $this->deleteI18nSearchIndex();
       $msg = i18n_r($this->id . '/CAT_CREATE_SUCC');
       $isSuccess = true;
     }
@@ -48,7 +44,7 @@
   if (isset($_POST['saveorder']) && isset($_POST['name'])) {
     $succ = array();
     foreach ($_POST['name'] as $order => $category) {
-      $file = $this->dataDir . '/categories/' . $category . '.xml';
+      $file = GSDATAOTHERPATH . $this->id . '/categories/' . $category . '.xml';
       if ($file) {
         $xml = new SimpleXMLExtended($file, 0, true);
         $xml->order = $order;
@@ -60,7 +56,7 @@
     }
     // success
     if (!in_array(false, $succ)) {
-      $this->setup->deleteI18nSearchIndex();
+      $this->deleteI18nSearchIndex();
       $msg = i18n_r($this->id . '/CAT_ORDER_SUCC');
       $isSuccess = true;
     }
@@ -72,14 +68,14 @@
   }
   // delete category
   if (isset($_GET['delete'])) {
-    $file = $this->dataDir . '/categories/' . $_GET['delete'] . '.xml';
+    $file = GSDATAOTHERPATH . $this->id . '/categories/' . $_GET['delete'] . '.xml';
     if (file_exists($file)) {
       $succ = (bool) unlink($file);
     }
     else $succ = false;
     
     if ($succ) {
-      $this->setup->deleteI18nSearchIndex();
+      $this->deleteI18nSearchIndex();
       $msg = i18n_r($this->id . '/CAT_DEL_SUCC');
       $isSuccess = true;
     }
@@ -88,56 +84,39 @@
       $isSuccess = false;
     }
   }
-
+  
   // load categories
-  $categoriesParams = array(
-    'wildcard' => $this->dataDir . '/categories/*.xml',
-    'settings' => $this->settings,
-  );
-
-  $getCategoriesParams = array(
-    // ...
-  );
-
-  $categories = new CatalogCategories($categoriesParams);
-  $cats = $categories->getCategories($getCategoriesParams);
+  $categories = new CatalogCategories(GSDATAOTHERPATH . $this->id . '/categories/*.xml', $catalogurl, $slugged);
+  $cats = $categories->getCategories(false, 'order');
 ?>
 
 <h3 class="floated"><?php i18n($this->id . '/CATEGORIES'); ?></h3>
 <div class="edit-nav clearfix">
-  <a href="<?php echo $this->adminUrl; ?>&categories=create"><?php i18n($this->id . '/CREATE_CATEGORY'); ?></a>
+	<a href="load.php?id=<?php echo $this->id; ?>&categories=create"><?php i18n($this->id . '/CREATE_CATEGORY'); ?></a>
 </div>
 
 <form action="" method="post">
   <table class="highlight edittable" id="viewcategories">
     <thead>
       <tr>
-        <th width="5%"><?php i18n($this->id . '/ID'); ?></th>
-        <th width="20%"><?php i18n($this->id . '/SLUG'); ?></th>
+        <th width="25%"><?php i18n($this->id . '/ID'); ?></th>
         <th width="70%"><?php i18n($this->id . '/NAME'); ?></th>
         <th></th>
       </tr>
     </thead>
     <tbody>
-      <?php foreach ($cats as $category) :
-        $id   = $category->getField('id', true);
-        $slug = $id['slug'];
-        $id   = $id['numeric'];
-      ?>
+      <?php foreach ($cats as $category) : ?>
       <tr>
         <td>
-          <?php echo $id; ?>
-          <input type="hidden" name="name[]" value="<?php echo $category->getField('id'); ?>">
+          <?php echo $category->getId(); ?>
+          <input type="hidden" name="name[]" value="<?php echo $category->getId(); ?>">
         </td>
         <td>
-          <?php echo $slug; ?>
-        </td>
-        <td>
-          <a href="<?php echo $this->adminUrl; ?>&categories=<?php echo $category->getField('id'); ?>"><?php echo $category->getField('title'); ?></a>
+          <a href="load.php?id=<?php echo $this->id; ?>&categories=<?php echo $category->getId(); ?>"><?php echo $category->getTitle(); ?></a>
         </td>
         <td style="text-align: right;">
-          <a href="<?php echo $category->getField('url'); ?>" target="_blank">#</a>
-          <a href="<?php echo $this->adminUrl; ?>&categories&delete=<?php echo $category->getField('id'); ?>" class="cancel" onclick="deleteCategory(); return false;">x</a>
+          <a href="<?php echo $category->getUrl(); ?>" target="_blank">#</a>
+          <a href="load.php?id=<?php echo $this->id; ?>&categories&delete=<?php echo $category->getId(); ?>" class="cancel" onclick="deleteCategory(); return false;">x</a>
         </td>
       </tr>
       <?php endforeach; ?>
@@ -150,8 +129,8 @@
   </table>
   
   <p id="submit_line">
-    <span><input class="submit" name="saveorder" value="<?php i18n('BTN_SAVECHANGES'); ?>" type="submit"></span>
-  </p>
+		<span><input class="submit" name="saveorder" value="<?php i18n('BTN_SAVECHANGES'); ?>" type="submit"></span>
+	</p>
 </form>
 
 <script>
