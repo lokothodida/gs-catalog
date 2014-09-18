@@ -87,6 +87,7 @@ class CatalogPlugin {
       'settings'  => $this->settings,
       'pluginDir' => $this->pluginDir,
       'dataDir'   => $this->dataDir,
+      'setup'     => $this->setup,
     );
     $router = new CatalogRouter($routerParams);
 

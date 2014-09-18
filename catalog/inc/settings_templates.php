@@ -25,8 +25,8 @@
 <?php
   // activate a theme
   if (isset($_GET['activate'])) {
-    $file = GSDATAOTHERPATH . $this->id . '/templates.xml';
-    $template = GSDATAOTHERPATH . $this->id . '/templates/' . $_GET['activate'] . '.xml';
+    $file = $this->dataDir . '/templates.xml';
+    $template = $this->dataDir . '/templates/' . $_GET['activate'] . '.xml';
 
     if (file_exists($file)) {
       $xml = new SimpleXMLExtended($file, 0, true);
@@ -47,10 +47,10 @@
     if ($upload['type'] == 'text/xml') {
       $filename = $upload['name'];
       $themename = basename($filename, '.xml');
-      $destination = GSDATAOTHERPATH . $this->id . '/templates/' . $filename;
+      $destination = $this->dataDir . '/templates/' . $filename;
 
       if (!file_exists($destination)) {
-        move_uploaded_file($upload['tmp_name'], GSDATAOTHERPATH . $this->id . '/templates/' . $filename);
+        move_uploaded_file($upload['tmp_name'], $this->dataDir . '/themes/' . $filename);
 
         $msg = str_replace('%s', '<strong>' . $themename . '</strong>', i18n_r($this->id . '/OPTIONS_UPLOAD_THEME_SUCC'));
         $isSuccess = true;
@@ -67,8 +67,8 @@
   // exporting a template for download
   if (isset($_GET['export'])) {
     $template = $_GET['export'] . '.xml';
-    $templatesDir = GSDATAOTHERPATH . $this->id . '/templates/' . $template;
-    $tmpDir = GSDATAOTHERPATH . $this->id . '/tmp/' . $template;
+    $templatesDir = $this->dataDir . '/templates/' . $template;
+    $tmpDir = $this->dataDir . '/tmp/' . $template;
 
     copy($templatesDir, $tmpDir);
 
@@ -78,13 +78,13 @@
   // saving options
   if (isset($_POST['submitted'])) {
     $fields = array('main', 'header', 'category', 'product', 'featured', 'i18nsearch-product', 'footer');
-    $xml = new SimpleXMLExtended('<templates/>');
+    $xml = new SimpleXMLExtended('<theme/>');
     foreach ($fields as $k => $field) {
       $xml->template[$k] = null;
       $xml->template[$k]->addAttribute('name', $field);
       $xml->template[$k]->addCData($_POST[$field]);
     }
-    $succ = (bool) $xml->saveXML(GSDATAOTHERPATH . $this->id . '/templates/' . $_POST['current'] . '.xml');
+    $succ = (bool) $xml->saveXML($this->dataDir . '/themes/' . $_POST['current'] . '.xml');
     
     // success
     if ($succ) {
@@ -98,11 +98,11 @@
     }
   }
 
-  $general   = new CatalogGeneralOptions(GSDATAOTHERPATH . $this->id . '/general.xml');
-  $templates = new CatalogTemplates(GSDATAOTHERPATH . $this->id . '/templates.xml', GSDATAOTHERPATH . $this->id . '/templates/*.xml');
-  $themes    = $templates->getThemes();
-  $current   = $templates->getCurrentTheme();
-  $templates = $templates->getTemplates();
+  $general   = new CatalogSettingsGeneral($this->dataDir . '/general.xml');
+  $theme = new CatalogSettingsTheme(array('file' => $this->dataDir . '/themes.xml', 'directory' => $this->dataDir . '/themes/'));
+  //$themes    = $templates->getThemes();
+  //$current   = $templates->getCurrentTheme();
+  //$templates = $templates->getTemplates();
 ?>
 <!--select theme/template-->
 <?php if (isset($_GET['export']) && isset($template)) : ?>
@@ -142,47 +142,60 @@ $(document).ready(function() {
 </script>
 <form action="" method="post">
 <input type="hidden" name="current" value="<?php echo $current; ?>"/>
-<!-- main catalog page template -->
-<p>
-  <h4 style="font-weight: bold;"><?php i18n($this->id . '/MAIN'); ?> : </h4>
-  <textarea id="main" name="main" style="height: 200px !important;"><?php echo $templates['main']; ?></textarea>
-  <?php $textarea = 'main'; include('codemirror.php'); ?>
-</p>
-<!--header template-->
+
+<!-- header -->
 <p>
   <h4 style="font-weight: bold;"><?php i18n($this->id . '/HEADER'); ?> : </h4>
-  <textarea id="t-header" name="header" style="height: 200px !important;"><?php echo $templates['header']; ?></textarea>
+  <textarea id="t-header" name="header" style="height: 200px !important;"><?php echo $theme->get('header'); ?></textarea>
   <?php $textarea = 't-header'; include('codemirror.php'); ?>
 </p>
-<!--category-->
+
+
+<!-- index (header) -->
+<p>
+  <h4 style="font-weight: bold;"><?php i18n($this->id . '/INDEX_HEADER'); ?> : </h4>
+  <textarea id="indexHeader" name="indexHeader" style="height: 200px !important;"><?php echo $theme->get('indexHeader'); ?></textarea>
+  <?php $textarea = 'indexHeader'; include('codemirror.php'); ?>
+</p>
+
+<!-- index (categories loop) -->
+<p>
+  <h4 style="font-weight: bold;"><?php i18n($this->id . '/INDEX_CATEGORIES'); ?> : </h4>
+  <textarea id="indexCategories" name="indexCategories" style="height: 200px !important;"><?php echo $theme->get('indexCategories'); ?></textarea>
+  <?php $textarea = 'indexCategories'; include('codemirror.php'); ?>
+</p>
+
+<!-- index (footer) -->
+<p>
+  <h4 style="font-weight: bold;"><?php i18n($this->id . '/INDEX_FOOTER'); ?> : </h4>
+  <textarea id="indexFooter" name="indexFooter" style="height: 200px !important;"><?php echo $theme->get('indexFooter'); ?></textarea>
+  <?php $textarea = 'indexFooter'; include('codemirror.php'); ?>
+</p>
+
+<!-- category (showing its products) -->
 <p>
   <h4 style="font-weight: bold;"><?php i18n($this->id . '/CATEGORY'); ?> : </h4>
-  <textarea id="category" name="category" style="height: 200px !important;"><?php echo $templates['category']; ?></textarea>
+  <textarea id="category" name="category" style="height: 200px !important;"><?php echo $theme->get('category'); ?></textarea>
   <?php $textarea = 'category'; include('codemirror.php'); ?>
 </p>
+
 <!--product-->
 <p>
   <h4 style="font-weight: bold;"><?php i18n($this->id . '/PRODUCT'); ?> : </h4>
-  <textarea id="product" name="product" style="height: 200px !important;"><?php echo $templates['product']; ?></textarea>
+  <textarea id="product" name="product" style="height: 200px !important;"><?php echo $theme->get('product'); ?></textarea>
   <?php $textarea = 'product'; include('codemirror.php'); ?>
 </p>
-<?php if ($general->getI18nSearch() == 'y') : ?>
-  <!--search product-->
-  <p>
-    <h4 style="font-weight: bold;"><?php i18n($this->id . '/I18N_SEARCH_PROD'); ?> : </h4>
-    <textarea id="featured" name="i18nsearch-product" style="height: 200px !important;"><?php echo $templates['i18nsearch-product']; ?></textarea>
-    <?php $textarea = 'i18nsearch-product'; include('codemirror.php'); ?>
-  </p>
-<?php endif; ?>
-<!--footer template-->
+
+<!--search item (product)-->
+<p>
+  <h4 style="font-weight: bold;"><?php i18n($this->id . '/SEARCH_ITEM'); ?> : </h4>
+  <textarea id="searchProduct" name="searchProduct" style="height: 200px !important;"><?php echo $theme->get('searchProduct'); ?></textarea>
+  <?php $textarea = 'searchProduct'; include('codemirror.php'); ?>
+</p>
+
+<!--footer-->
 <p>
   <h4 style="font-weight: bold;"><?php i18n($this->id . '/FOOTER'); ?> : </h4>
-  <textarea id="t-footer" name="footer" style="height: 200px !important;"><?php echo $templates['footer']; ?></textarea>
-  <?php $textarea = 't-footer'; include('codemirror.php'); ?>
-</p>
-<!--featured products-->
-<p>
-  <h4 style="font-weight: bold;"><?php i18n($this->id . '/FEATURED'); ?> : </h4>
-  <textarea id="featured" name="featured" style="height: 200px !important;"><?php echo $templates['featured']; ?></textarea>
-  <?php $textarea = 'featured'; include('codemirror.php'); ?>
+  <textarea id="footer" name="footer" style="height: 200px !important;"><?php echo $theme->get('footer'); ?></textarea>
+  <?php $textarea = 'footer'; include('codemirror.php'); ?>
 </p>

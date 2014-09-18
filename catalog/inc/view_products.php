@@ -2,7 +2,7 @@
   // create new product
   if (isset($_POST['submitted'])) {
     $xml = new SimpleXMLExtended('<product/>');
-    $fields = new ProductFields(GSDATAOTHERPATH . $this->id . '/fields.xml');
+    $fields = new CatalogSettingsFields(array('file' => GSDATAOTHERPATH . $this->id . '/fields.xml'));
     $fields = $fields->getFields();
 
     // title
@@ -29,11 +29,17 @@
         $xml->{$field->name}->addCData('n');
       }
     }
-    
+
+    // dates
+    $xml->credate = null;
+    $xml->credate->addCData(time());
+    $xml->pubdate = null;
+    $xml->pubdate->addCData(time());
+
     // save the file if name doesn't cause a clash
     $identifiers = simplexml_load_file(GSDATAOTHERPATH . $this->id . '/identifiers.xml');
-    $filename = GSDATAOTHERPATH . $this->id . '/products/' . $identifiers->products . '-' . $this->toSlug($_POST['title']) . '.xml';
-    if ($this->toSlug($_POST['title']) && !file_exists($filename)) {
+    $filename = GSDATAOTHERPATH . $this->id . '/products/' . $identifiers->products . '-' . $this->setup->toSlug($_POST['title']) . '.xml';
+    if ($this->setup->toSlug($_POST['title']) && !file_exists($filename)) {
       $succ = (bool) $xml->saveXML($filename);
       $identifiers->products = ((int) $identifiers->products) + 1;
       $identifiers->saveXML(GSDATAOTHERPATH . $this->id . '/identifiers.xml');
@@ -45,7 +51,7 @@
     
     // success
     if ($succ) {
-      $this->deleteI18nSearchIndex();
+      $this->setup->deleteI18nSearchIndex();
       $msg = i18n_r($this->id . '/PROD_CRE_SUCC');
       $isSuccess = true;
     }
@@ -66,7 +72,7 @@
     
     // success
     if ($succ) {
-      $this->deleteI18nSearchIndex();
+      $this->setup->deleteI18nSearchIndex();
       $msg = i18n_r($this->id . '/PROD_DEL_SUCC');
       $isSuccess = true;
     }
@@ -85,6 +91,14 @@
 
   $categories = new CatalogCategories($categoriesParams);
   $categories = $categories->getCategories();
+  $tmpcats = array();
+
+  // set the array keys to the ids of the categories
+  foreach ($categories as $k => $category) {
+    $tmpcats[$category->getField('id')] = $category;
+  }
+
+  $categories = $tmpcats;
 
   // load products
   $productsParams = array(
@@ -95,7 +109,14 @@
   $products = new CatalogProducts($productsParams);
 
   $filter = isset($_GET['filter']) && $_GET['filter'] != 'all' ? $_GET['filter'] : false;
-  $prods = $products->getProducts(array('filter' => $filter));
+
+  $getProductsParams = array('filter' => $filter);
+
+  if ($this->setup->i18nExists()) {
+    $getProductsParams['languages'] = true;
+  }
+
+  $prods = $products->getProducts($getProductsParams);
 ?>
 <form>
   <h3 class="floated"><?php i18n($this->id . '/PRODUCTS'); ?></h3>
@@ -129,26 +150,47 @@
   <table class="edittable highlight paginate">
     <thead>
       <tr>
+        <?php if ($this->setup->i18nExists()) : ?>
+          <th><?php i18n('LANGUAGE'); ?></th>
+        <?php endif; ?>
         <th width="60%"><?php i18n($this->id . '/NAME'); ?></th>
         <th width="35%"><?php i18n($this->id . '/CATEGORIES'); ?></th>
         <th width="5%"></th>
       </tr>
     </thead>
     <tbody>
-      <?php foreach ($prods as $product) : ?>
+      <?php
+        foreach ($prods as $product) :
+          if ($this->setup->i18nExists()) {
+            $languages = $product['language'];
+            $product   = $product['language'][return_i18n_default_language()];
+          }
+      ?>
       <tr>
-        <td><a href="load.php?id=<?php echo $this->id; ?>&products=<?php echo $product->getField('id'); ?>"><?php echo $product->getField('title'); ?></a></td>
+        <?php if ($this->setup->i18nExists()) : ?>
+          <td>
+            <select class="text selectLanguage" style="width: 50px;">
+              <?php foreach ($languages as $lang => $pr) : ?>
+                <option>
+                  <?php echo $lang; ?>
+                </option>
+              <?php endforeach; ?>
+            </select>
+          </td>
+        <?php endif; ?>
+        <td><a class="editProduct" href="load.php?id=<?php echo $this->id; ?>&products=<?php echo $product->getField('id'); ?>"><?php echo $product->getField('title'); ?></a></td>
         <td>
           <?php
+            // display the category links
             foreach ($product->getField('categories') as $category) {
-              if (isset($categories[(string) $category])) {
-                $product->setUrl($categories[(string) $category]);
-                echo '<li><a href="' . $product->getUrl() . '" target="_blank">'. $categories[(string) $category]->getTitle() . '</a></li>';
+              if (isset($categories[$category])) {
+                $product->setUrlFromCategory($categories[$category]);
+                echo '<li><a href="' . $product->getField('url') . '" target="_blank">'. $categories[(string) $category]->getField('title') . '</a></li>';
               }
             }
           ?>
         </td>
-        <td style="text-align: right;"><a class="cancel" href="load.php?id=<?php echo $this->id; ?>&products&del=<?php echo $product->getField('id'); ?>" onclick="deleteProduct(); return false;">x</a></td>
+        <td style="text-align: right;"><a class="cancel deleteProduct" href="load.php?id=<?php echo $this->id; ?>&products&del=<?php echo $product->getField('id'); ?>" onclick="deleteProduct(); return false;">x</a></td>
       </tr>
       <?php endforeach; ?>
       <?php if (empty($prods)) : ?>
@@ -166,4 +208,19 @@
       window.location = obj.getAttribute('href');
     }
   }
+  <?php if ($this->setup->i18nExists()) : ?>
+  $(document).ready(function() {
+    // select the correct language
+    $('.selectLanguage').change(function() {
+      var $this = $(this);
+      var lang = $this.val();
+
+      $this.closest('tr').find('.editProduct, .deleteProduct').each(function() {
+        var currentLink = $(this).attr('href').split('&lang=')[0];
+        var newLink = currentLink + '&lang=' + lang;
+        $(this).attr('href', newLink);
+      });
+    });
+  });
+  <?php endif; ?>
 </script>

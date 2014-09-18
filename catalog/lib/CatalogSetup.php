@@ -82,20 +82,20 @@ class CatalogSetup {
   // Adding sidebars
   public function addSidebar($name, $flag = false, $page = null) {
     if ($page == null) $page = $this->id;
-    add_action($page . '-sidebar','createSideMenu', array($this->id, i18n_r($this->id . '/' . $name), $flag));
+    add_action($page . '-sidebar','createSideMenu', array($this->id, i18n_r($name), $flag));
   }
 
   public function registerFrontEnd($plugin) {
     // register the catalog
-    add_action('error-404', array($plugin, 'displayCatalog'));
+    add_action('index-post-dataindex', array($plugin, 'displayCatalog'));
 
     // i18n search actions
-    $params = array();
-    $i18n = new CatalogI18nSearch($params);
+    $i18nParams = array();
+    $i18n = new CatalogI18nSearch($i18nParams);
 
-    add_action('search-index', array($i18n, 'searchIndex'));
-    add_filter('search-item', array($i18n, 'searchItem'));
-    add_filter('search-display', array($i18n, 'searchDisplay'));
+    //add_action('search-index', array($i18n, 'searchIndex'));
+    //add_filter('search-item', array($i18n, 'searchItem'));
+    //add_filter('search-display', array($i18n, 'searchDisplay'));
 
     // register and queue the javascript files
     register_script('simpleCart', $GLOBALS['SITEURL'] . '/plugins/' . $this->id . '/assets/js/simpleCart.min.js', '1.0', FALSE);
@@ -107,20 +107,20 @@ class CatalogSetup {
     add_action('nav-tab', 'createNavTab', array($this->id, $this->id, i18n_r($this->id . '/PLUGIN_TITLE'), 'home'));
 
     // sidebar links
-    $this->addSideBar('HOME', 'home');
-    $this->addSideBar('CATEGORIES', 'categories');
+    $this->addSideBar($this->id . '/HOME', 'home');
+    $this->addSideBar($this->id . '/CATEGORIES', 'categories');
 
     if (isset($_GET['id']) && ($_GET['id'] == $this->id)) {
       if (!empty($_GET['categories']) && $_GET['categories'] != 'create') {
-        $this->addSidebar('EDIT_CATEGORY', 'categories=' . $_GET['categories']);
-        $this->addSideBar('CREATE_CATEGORY', 'categories=create');
+        $this->addSidebar($this->id . '/EDIT_CATEGORY', 'categories=' . $_GET['categories']);
+        $this->addSideBar($this->id . '/CREATE_CATEGORY', 'categories=create');
       } elseif (!empty($_GET['categories'])) {
         
       }
     }
 
-    $this->addSideBar('PRODUCTS', 'products');
-    $this->addSideBar('OPTIONS', 'options');
+    $this->addSideBar($this->id . '/PRODUCTS', 'products');
+    $this->addSideBar('SETTINGS', 'settings');
 
     // the below registers the codemirror css and javascript files
     register_script('codemirror', $GLOBALS['SITEURL'] . $GLOBALS['GSADMIN'] . '/template/js/codemirror/lib/codemirror-compressed.js', '0.2.0', FALSE);
@@ -154,6 +154,11 @@ class CatalogSetup {
       $string =  str_replace(array_keys($translit), array_values($translit), $string);
     }
     return $string;
+  }
+
+  // Check i18n exists
+  public function i18nExists() {
+    return function_exists('return_i18n_default_language');
   }
 
   // Reset the i18n search index

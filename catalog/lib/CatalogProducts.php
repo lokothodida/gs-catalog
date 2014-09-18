@@ -23,6 +23,33 @@ class CatalogProducts {
   // Get the products
   public function getProducts(array $params = array()) {
     $products = $this->products;
+
+    // perform the query on the products
+    $sq = new CatalogItemsQuery($products);
+
+    $query = array();
+
+    // category
+    if (isset($params['categories'])) {
+      if (!is_array($params['categories'])) {
+        $params['categories'] = array($params['categories']);
+      }
+
+      $query['categories']['$has'] = $params['categories'];
+      $query['categories']['$cs'] = false;
+    }
+
+    $sort = array();
+
+    $results = $sq->query($query, $sort);
+
+
+    // languages
+    if (!empty($params['languages'])) {
+      $results = $this->sortProductsByLanguages($results);
+    }
+
+    return $results;
     /*
     // category
     if (isset($params['categories'])) {
@@ -47,6 +74,22 @@ class CatalogProducts {
     return $products;
   }
 
+  // Sort products into langauges
+  private function sortProductsByLanguages($products) {
+    $tmp = array();
+
+    foreach ($products as $product) {
+      $id      = $product->getField('id');
+      $explode = explode('_', $id);
+      $slug    = $explode[0];
+      $lang    = isset($explode[1]) ? $explode[1] : return_i18n_default_language();
+
+      $tmp[$slug]['language'][$lang] = $product;
+    }
+
+    return $tmp;
+  }
+
   // Load the products
   private function loadProducts($wildcard) {
     $products = glob($wildcard);
@@ -57,67 +100,6 @@ class CatalogProducts {
         'settings' => $this->settings,
       ));
     }
-  }
-
-  // Sort the products
-  private function sortProducts($products, $sort) {
-    $this->sort = $sort;
-    return uasort($products, array($this, 'sort'));
-  }
-
-  // Sorting algorithm
-  private function sort(CatalogProduct $a, CatalogProduct $b) {
-    $score = 0;
-
-    // run through each sorting field, aggregating the score
-    foreach ($this->sort as $field => $ascDesc) {
-      // check field values
-      $af = $a->getField($field);
-      $bf = $b->getField($field);
-
-      // compare numbers if the values are numeric; strings otherwise
-      $comparison = (is_numeric($af) && is_numeric($bf)) ? cmp($af, $bf) : strcmp($af, $bf);
-      $score += $ascDesc == 'asc' ? $comparison : -$comparison;
-    }
-
-    return $score;
-  }
-
-  // Filter the products
-  private function filterProducts($products, $filter) {
-    $this->filter = $filter;
-    return array_filter($products, array($this, 'filter'));
-  }
-
-  // Filtering algorithm
-  private function filter($product) {
-    foreach ($this->filter as $field) {
-      if ($product->getField($field['name']) == $field['value']) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  // Filtering algorithm for categories
-  private function filterCategory($products, $categories) {
-    $this->categories = array();
-
-    // get the numeric id for category (so either it or the full slug can be used)
-    foreach ($categories as $category) {
-      $numericId = explode('-', $category);
-      $numericId = reset($numericId);
-
-
-      if (is_numeric($numericId)) {
-        $this->categories[$numericId] = $category;
-      } else {
-        $this->categories[$category] = $category;
-      }
-    }
-
-    return array_filter($products, array($this, 'filterC'));
   }
 
   // Parse category slug into id and id-less slug
@@ -135,32 +117,6 @@ class CatalogProducts {
       'id' => $id,
       'slug' => $slug,
     );
-  }
-
-  // Filter by category
-  private function filterC($product) {
-    return true;
-    $categories = $product->getField('categories');
-
-    foreach ($this->categories as $id => $category) {
-      $parsedCategory = $this->parseCategorySlug($category);
-
-var_dump($category, $categories);
-echo '<br>';
-var_dump($inCategoriesArray = in_array($category, $categories));
-echo '<br><br>';
-
-      if ($inCategoriesArray) {
-        //return true;
-      }
-    }
-    return false;
-  }
-
-  // Search the products
-  private function searchProducts($products, $search) {
-    $this->search = $search;
-    return $products;
   }
 }
 

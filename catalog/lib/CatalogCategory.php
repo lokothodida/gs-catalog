@@ -12,6 +12,7 @@ class CatalogCategory extends CatalogItem {
   public function __construct(array $params) {
     parent::__construct($params);
     $this->item['id'] = basename($params['file'], '.xml');
+    $this->item['exists'] = (boolean) file_exists($params['file']);
     $this->setCategoryUrl();
   }
 

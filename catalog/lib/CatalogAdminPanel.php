@@ -37,9 +37,9 @@ class CatalogAdminPanel {
         // view products
         include($this->pluginDir . '/inc/view_products.php');
       }
-    } elseif (isset($_GET['options'])) {
+    } elseif (isset($_GET['settings'])) {
       // options page
-      include($this->pluginDir . '/inc/options.php');
+      include($this->pluginDir . '/inc/settings.php');
     } elseif (!empty($_GET['categories']) && $_GET['categories'] == 'create') {
       // categories pages
       // catalog&categories=create

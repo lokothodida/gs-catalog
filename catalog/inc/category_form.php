@@ -8,7 +8,7 @@
 
 $categoriesDropdown = '<select class="text" name="category"><option value=""></option>';
 foreach ($categories as $k => $data) {
-  $categoriesDropdown .= '<option value="' . $k . '">' . $data->getField('title') . '</option>';
+  $categoriesDropdown .= '<option value="' . $data->getField('id') . '">' . $data->getField('title') . '</option>';
 }
 $categoriesDropdown .= '</select>';
 

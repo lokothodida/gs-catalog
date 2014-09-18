@@ -1,5 +1,5 @@
 <?php
-  $fields = new ProductFields(GSDATAOTHERPATH . $this->id . '/fields.xml');
+  $fields = new CatalogSettingsFields(array('file' => $this->dataDir . '/fields.xml'));
   $fields = $fields->getFields();
 ?>
 
@@ -24,6 +24,10 @@
   }
 </style>
 
+<!--hidden fields-->
+<input type="hidden" name="credate" value="<?php echo $product->getField('credate'); ?>">
+<input type="hidden" name="pubdate" value="<?php echo time(); ?>">
+
 <div id="metadata_window2" class="customfields">
   <p>
     <label for="categories"><?php i18n($this->id . '/CATEGORIES'); ?> : </label>
@@ -31,13 +35,13 @@
       // set up categories dropdown
       $categoriesDropdown = '<select multiple class="text" name="categories[]">';
       foreach ($categories as $k => $data) {
-        $categoriesDropdown .= '<option value="' . $k . '">' . $data->getTitle() . '</option>';
+        $categoriesDropdown .= '<option value="' . $data->getField('id') . '">' . $data->getField('title') . '</option>';
       }
       $categoriesDropdown .= '</select>';
       
       // set up already-selected values from dropdown
       if ($product->getField('categories')) {
-        foreach ($product->getField('categories')->category as $cat) {
+        foreach ($product->getField('categories') as $cat) {
           $tmp = 'value="' . $cat . '"';
           $categoriesDropdown = str_replace($tmp, $tmp . ' selected', $categoriesDropdown);
         }

@@ -14,7 +14,7 @@ class CatalogProduct extends CatalogItem {
     parent::__construct($params);
 
     $this->item['id'] = basename($params['file'], '.xml');
-    $this->url = null;
+    $this->setUrl();
   }
 
   // Get a field
@@ -24,7 +24,7 @@ class CatalogProduct extends CatalogItem {
     // Format categories into array
     if ($field == 'categories') {
       if (isset($value['category'])) {
-        $value = $value['category'];
+        $value = (array) $value['category'];
       } else {
         $value = array();
       }
@@ -36,6 +36,28 @@ class CatalogProduct extends CatalogItem {
     // ...
 
     return $value;
+  }
+
+  // Use a category's url to set the url
+  public function setUrlFromCategory($category) {
+    $categories = (array) $category->getField('url');
+    $implode = implode('/', $categories);
+
+    //$explode = explode('%product%', $this->generalSettings->get('urlProduct'));
+
+    $this->url = str_replace(
+      array('/%parents%', '%product%'),
+      array($implode, $this->getField('id')),
+      $this->generalSettings->get('urlProduct'));
+  }
+
+  // Set the URL
+  private function setUrl() {
+    $this->url = str_replace(
+      array('/%parents%', '%product%'),
+      array('', $this->getField('id')),
+      $this->generalSettings->get('urlProduct')
+    );
   }
 
   // Get the URL

@@ -1,8 +1,15 @@
 <?php
+  // choose correct product id
+  $productId = $_GET['products'];
+
+  if ($this->setup->i18nExists() && isset($_GET['lang']) && $_GET['lang'] != return_i18n_default_language()) {
+    $productId .= '_' . $_GET['lang'];
+  }
+
   // save changes
   if (isset($_POST['submitted'])) {
     $xml = new SimpleXMLExtended('<product/>');
-    $fields = new ProductFields(GSDATAOTHERPATH . $this->id . '/fields.xml');
+    $fields = new CatalogSettingsFields(array('file' => $this->dataDir . '/fields.xml'));
     $fields = $fields->getFields();
 
     // title
@@ -30,15 +37,20 @@
       }
     }
 
+    // dates
+    $xml->credate = null;
+    $xml->credate->addCData($_POST['credate']);
+    $xml->pubdate = null;
+    $xml->pubdate->addCData(time());
+
     // save xml file
-    $succ = (bool) $xml->saveXML(GSDATAOTHERPATH . $this->id . '/products/' . $_GET['products'] . '.xml');
+    $succ = (bool) $xml->saveXML($this->dataDir . '/products/' . $productId . '.xml');
     
     if ($succ) {
-      $this->deleteI18nSearchIndex();
+      $this->setup->deleteI18nSearchIndex();
       $msg = i18n_r($this->id . '/PROD_EDIT_SUCC');
       $isSuccess = true;
-    }
-    else {
+    } else {
       $msg = i18n_r($this->id . '/PROD_EDIT_FAIL');
       $isSuccess = false;
     }
@@ -61,19 +73,10 @@
   $products = new CatalogProducts($productsParams);
 
   $productParams = array(
-    'file'     => $this->dataDir . '/products/' . $_GET['products'] . '.xml',
+    'file'     => $this->dataDir . '/products/' . $productId . '.xml',
     'settings' => $this->settings,
   );
   $product = new CatalogProduct($productParams);
-
-  /*
-  // load categories and products
-  $categories = new CatalogCategories(GSDATAOTHERPATH . $this->id . '/categories/*.xml', $catalogurl, $slugged);
-  $categories = $categories->getCategories();
-  $products = new CatalogProducts(GSDATAOTHERPATH . $this->id . '/products/*.xml', null, $slugged);
-  $products = $products->getProducts();
-  $product = $products[$_GET['products']];
-  */
 ?>
 <h3><?php i18n($this->id . '/EDIT_PRODUCT'); ?></h3>
 <form action="" method="post">

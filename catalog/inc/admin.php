@@ -1,24 +1,23 @@
 <?php
+  $home = isset($_GET['home']);
+
   // reset options
-  if ($_GET['home'] == 'resetoptions') {
+  if ($home && $_GET['home'] == 'resetoptions') {
     $succ = $this->setup->makeDefaultFiles(true);
     if (!in_array(false, $succ)) {
       $msg = i18n_r($this->id . '/RESET_OP_SUCC');
       $isSuccess = true;
-    }
-    else {
+    } else {
       $msg = i18n_r($this->id . '/RESET_OP_FAIL');
       $isSuccess = false;
     }
-  }
-  // clear the catalog
-  elseif ($_GET['home'] == 'clearcatalog') {
+  } elseif ($home && $_GET['home'] == 'clearcatalog') {
+    // clear the catalog
     $succ = $this->setup->clearCatalog();
     if (!in_array(false, $succ)) {
       $msg = i18n_r($this->id . '/CLEAR_CAT_SUCC');
       $isSuccess = true;
-    }
-    else {
+    } else {
       $msg = i18n_r($this->id . '/CLEAR_CAT_FAIL');
       $isSuccess = false;
     }

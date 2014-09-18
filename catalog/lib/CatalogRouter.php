@@ -21,6 +21,7 @@ class CatalogRouter {
     $this->settings        = $params['settings'];
     $this->pluginDir       = $params['pluginDir'];
     $this->dataDir         = $params['dataDir'];
+    $this->setup           = $params['setup'];
     $this->generalSettings = $this->settings->get('general');
 
     $this->parseUrl();
@@ -98,12 +99,51 @@ class CatalogRouter {
       );
 
       $params['product'] = new CatalogProduct($productParams);
+
+      $productsParams = array(
+        'wildcard' => $this->dataDir . 'products/*.xml',
+        'settings' => $this->settings,
+      );
+
+      $getProductsParams = array('filter' => array('id' => $id));
+
+      if ($this->setup->i18nExists()) {
+        $getProductsParams['languages'] = true;
+      }
+
+      $products = new CatalogProducts($productsParams);
+      $products = $products->getProducts($getProductsParams);
+
+      // select the correct language
+      if ($this->setup->i18nExists()) {
+        $lang = return_i18n_languages();
+        $lang = isset($products[$id]['language'][$lang[0]]) ? $lang[0]: return_i18n_default_language();
+        $params['product'] = $products[$id]['language'][$lang];
+      }
+
       $params['categories'] = new CatalogCategories(array(
         'wildcard' => $this->dataDir . 'categories/*.xml',
         'settings' => $this->settings,
       ));
     } else {
       // index
+      $params['categories'] = new CatalogCategories(array(
+        'wildcard' => $this->dataDir . 'categories/*.xml',
+        'settings' => $this->settings,
+      ));
+
+      $getCategoriesParams = array();
+      $categoryView = $this->generalSettings->get('categoryview');
+
+      if ($categoryView == 'hierarchical') {
+        $getCategoriesParams['hierarchical'] = true;
+      } elseif ($categoryView == 'parents') {
+        $getCategoriesParams['parentsOnly'] = true;
+      } else {
+        
+      }
+
+      $params['categories'] = $params['categories']->getCategories($getCategoriesParams);
     }
 
     return $params;
@@ -123,6 +163,9 @@ class CatalogRouter {
     $this->path = array_filter($this->path, array($this, 'filterEmpty')); // remove empty values
     $this->path = array_values($this->path);                              // reindex array from 0
 
+    // ensure that the rest of the query isn't included at the end of the path
+    $this->path[count($this->path) - 1] = $this->removeQueryString($this->path[count($this->path) - 1]);
+
     // if the first element of the path is the catalog slug, we are in the catalog
     if ($this->generalSettings->get('slug') == $this->path[0]) {
       // plus, we don't need it as the first element of the path array
@@ -132,6 +175,17 @@ class CatalogRouter {
       // set the page type
       $this->pageType = count($this->path) ? $this->path[0] : $this->pageType;
     }
+  }
+
+  // Remove the query string from the end of the URL
+  private function removeQueryString($string) {
+    $explode = explode('?', $string);
+    $string = $explode[0];
+
+    $explode = explode('&', $string);
+    $string = $explode[0];
+
+    return $string;
   }
 }
 

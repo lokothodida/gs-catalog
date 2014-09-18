@@ -40,7 +40,7 @@ class CatalogRender {
     if ($this->inCatalog()) {
       ob_start();
 
-      eval('?>' . $this->themeSettings->get('header'));
+      $this->executeTemplate($this->themeSettings->get('header'));
 
       if ($method = $this->pageExists($page)) {
         // render the correct page
@@ -50,7 +50,7 @@ class CatalogRender {
         $this->renderIndex();
       }
 
-      eval('?>' . $this->themeSettings->get('footer'));
+      $this->executeTemplate($this->themeSettings->get('footer'));
 
       $this->pageContent = ob_get_contents();
       ob_clean();
@@ -62,8 +62,58 @@ class CatalogRender {
 
   /** Pages to render */
   // Index/home page
-  private function renderIndex() {
+  private function renderIndex($params) {
+    // set page title
     $this->pageTitle = $this->generalSettings->get('title');
+
+    // set parameters
+    $categories   = $params['categories'];
+    $categoryView = $this->generalSettings->get('categoryview');
+
+    $this->executeTemplate($this->themeSettings->get('indexHeader'));
+
+    // format
+    if ($categoryView == 'hierarchical') {
+      // hierarchical view
+      ?>
+      <ul><?php $this->renderCategoryRec($categories, $this->themeSettings->get('indexCategories')); ?></ul>
+      <?php
+    } else {
+      // ordered view
+      foreach ($categories as $category) {
+        $this->executeTemplate($this->themeSettings->get('indexCategories'),
+          array(
+            'category' => $category,
+          )
+        );
+      }
+    }
+
+    $this->executeTemplate($this->themeSettings->get('indexFooter'));
+  }
+
+  // Category (hierarchical) for index
+  private function renderCategoryRec($categories, $template) {
+    foreach ($categories as $category) :
+      $children = $category['children'];
+      $category = $category['category'];
+    ?>
+    <li>
+      <?php
+        $this->executeTemplate($template, array('category' => $category, 'children' => $children));
+
+        // render the children
+        if ($children) {
+          ?>
+          <ul>
+          <?php $this->renderCategoryRec($children, $template); ?>
+          </ul>
+          <?php
+        }
+      ?>
+    </li>
+    <?php
+    endforeach;
   }
 
   // Category
@@ -73,11 +123,17 @@ class CatalogRender {
 
     $this->pageTitle = $category->getField('title');
 
-    eval('?>' . $this->themeSettings->get('categoryHeader'));
+    // pagination
 
-    foreach ($products as $product) {
-      eval('?>' . $this->themeSettings->get('categoryProducts'));
-    }
+    // display category and products
+    $this->executeTemplate($this->themeSettings->get('category'),
+      array(
+        'category' => $category,
+        'products' => $products,
+      )
+    );
+
+    // pagination
   }
 
   // Product
@@ -87,7 +143,37 @@ class CatalogRender {
 
     $this->pageTitle = $product->getField('title');
 
-    eval('?>' . $this->themeSettings->get('product'));
+    $this->executeTemplate($this->themeSettings->get('product'),
+      array(
+        'categories' => $categories,
+        'product'    => $product,
+      ));
+  }
+
+  // Search page
+  private function renderSearch($params) {
+    $results = $params['results'];
+    include('../inc/search.php');
+  }
+
+  // Featured page
+  private function renderFeatured($params) {
+    // ...
+  }
+
+  // Evaluate
+  private function evaluate($expr) {
+    return eval('?>' . $expr);
+  }
+
+  private function executeTemplate($template, $vars = array()) {
+    // import variables
+    foreach ($vars as $k => $var) {
+      ${$k} = $var;
+    }
+
+    // evaluate template string
+    eval('?>' . $template);
   }
 }
 

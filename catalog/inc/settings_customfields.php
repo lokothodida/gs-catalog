@@ -35,7 +35,7 @@
 
 <?php
 
-$fields = new ProductFields(GSDATAOTHERPATH . $this->id . '/fields.xml');
+$fields = new CatalogSettingsFields(array('file' => GSDATAOTHERPATH . $this->id . '/fields.xml'));
 $fieldHtml = '
 
 <tr>
