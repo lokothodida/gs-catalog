@@ -124,6 +124,7 @@ class CatalogRender {
     $this->pageTitle = $category->getField('title');
 
     // pagination
+    echo $params['navigation'];
 
     // display category and products
     $this->executeTemplate($this->themeSettings->get('category'),
@@ -134,6 +135,7 @@ class CatalogRender {
     );
 
     // pagination
+    echo $params['navigation'];
   }
 
   // Product

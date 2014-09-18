@@ -77,6 +77,23 @@ class CatalogRouter {
       $params['products'] = $params['products']->getProducts(array(
         'categories' => array($params['category']->getField('id')),
       ));
+
+      // pagination
+      $paginate = new ArrayPaginate($params['products']);
+
+      $_GET['p'] = isset($_GET['p']) ? $_GET['p'] : 1;
+
+      // set up the pagination url
+      $url = $this->removeQueryString($this->url) . '?p=%page%';
+
+      $results = $paginate->paginate(array(
+        'itemsPerPage' => $this->generalSettings->get('productsperpage'),
+        'currentPage'  => $_GET['p'],
+        'url'          => $url,
+      ));
+
+      $params['products'] = $results['results'];
+      $params['navigation'] = $results['navigation'];
     } elseif ($this->pageType == 'product') {
       // product
       // Remove extension
