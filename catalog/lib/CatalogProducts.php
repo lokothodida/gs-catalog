@@ -16,8 +16,9 @@ class CatalogProducts {
   /** methods */
   // Constructor
   public function __construct(array $params) {
+    $params['i18n'] = isset($params['i18n']) ? $params['i18n'] : false;
     $this->settings = $params['settings'];
-    $this->loadProducts($params['wildcard']);
+    $this->loadProducts($params['wildcard'], $params['i18n']);
   }
 
   // Get the products
@@ -47,6 +48,11 @@ class CatalogProducts {
     // languages
     if (!empty($params['languages'])) {
       $results = $this->sortProductsByLanguages($results);
+    }
+
+    // get a particular language
+    if (!empty($params['languages']) && $params['languages'] !== true) {
+      $results = $this->filterProductsByLanguages($results, $params['languages']);
     }
 
     return $results;
@@ -79,10 +85,8 @@ class CatalogProducts {
     $tmp = array();
 
     foreach ($products as $product) {
-      $id      = $product->getField('id');
-      $explode = explode('_', $id);
-      $slug    = $explode[0];
-      $lang    = isset($explode[1]) ? $explode[1] : return_i18n_default_language();
+      $slug    = $product->getField('id');
+      $lang = $product->getField('lang');
 
       $tmp[$slug]['language'][$lang] = $product;
     }
@@ -90,14 +94,34 @@ class CatalogProducts {
     return $tmp;
   }
 
+  // Filter products into a particular language
+  private function filterProductsByLanguages($products, $lang) {
+    $tmp = array();
+
+    foreach ($products as $k => $product) {
+      foreach ($product['language'] as $l => $p) {
+        if ($l == $lang) {
+          $tmp[$k] = $p;
+          break;
+        } elseif ($l == return_i18n_default_language()) {
+          $tmp[$k] = $p;
+          break;
+        }
+      }
+    }
+
+    return $tmp;
+  }
+
   // Load the products
-  private function loadProducts($wildcard) {
+  private function loadProducts($wildcard, $i18n = false) {
     $products = glob($wildcard);
 
     foreach ($products as $product) {
       $this->products[] = new CatalogProduct(array(
         'file'     => $product,
         'settings' => $this->settings,
+        'i18n'     => $i18n,
       ));
     }
   }

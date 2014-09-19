@@ -70,13 +70,23 @@ class CatalogRouter {
       $productsParams = array(
         'wildcard' => $this->dataDir . 'products/*.xml',
         'settings' => $this->settings,
+        'i18n' => $this->setup->i18nExists(),
       );
 
       $params['category'] = new CatalogCategory($categoryParams);
       $params['products'] = new CatalogProducts($productsParams);
-      $params['products'] = $params['products']->getProducts(array(
-        'categories' => array($params['category']->getField('id')),
-      ));
+
+      $getProductsParams = array();
+      $getProductsParams['categories'] = array($params['category']->getField('id'));
+
+      // language
+      if ($this->setup->i18nExists()) {
+        $lang = return_i18n_languages();
+        $lang = $lang[0];
+        $getProductsParams['languages'] = $lang;
+      }
+
+      $params['products'] = $params['products']->getProducts($getProductsParams);
 
       // pagination
       $paginate = new ArrayPaginate($params['products']);
@@ -120,6 +130,7 @@ class CatalogRouter {
       $productsParams = array(
         'wildcard' => $this->dataDir . 'products/*.xml',
         'settings' => $this->settings,
+        'i18n' => $this->setup->i18nExists(),
       );
 
       $getProductsParams = array('filter' => array('id' => $id));

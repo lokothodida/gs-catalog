@@ -104,6 +104,7 @@
   $productsParams = array(
     'wildcard' => $this->dataDir . '/products/*.xml',
     'settings' => $this->settings,
+    'i18n'     => $this->setup->i18nExists(),
   );
 
   $products = new CatalogProducts($productsParams);
@@ -184,8 +185,9 @@
             // display the category links
             foreach ($product->getField('categories') as $category) {
               if (isset($categories[$category])) {
-                $product->setUrlFromCategory($categories[$category]);
-                echo '<li><a href="' . $product->getField('url') . '" target="_blank">'. $categories[(string) $category]->getField('title') . '</a></li>';
+                $cat = $categories[$category];
+                //$product->setUrlFromCategory($categories[$category]);
+                echo '<li><a href="' . $cat->getField('url') . '" target="_blank">'. $cat->getField('title') . '</a></li>';
               }
             }
           ?>
