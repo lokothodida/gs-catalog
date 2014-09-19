@@ -15,14 +15,28 @@
       // editor(s)
       'wysiwyg',
       'wysiwygtoolbar',
+      'languages',
       );
     $xml = new SimpleXMLExtended('<options/>');
     foreach ($fields as $k => $field) {
       $xml->{$field} = null;
       if (isset($_POST[$field])) {
-        $xml->{$field}->addCData($_POST[$field]);
-      }
-      else {
+        if ($field == 'languages') {
+          // language formatting
+          $languages = explode("\n", $_POST[$field]);
+          $languages = array_map('trim', $languages);
+
+          if ($this->setup->i18nExists() && !in_array($defaultLang = trim(return_i18n_default_language()), $languages)) {
+            $langauges = array_unshift($languages, $defaultLang);
+          }
+
+          $languages = implode("\n", $languages);
+
+          $xml->{$field}->addCData($languages);
+        } else {
+          $xml->{$field}->addCData($_POST[$field]);
+        }
+      } else {
         $xml->{$field}->addCData(null);
       }
     }
@@ -113,6 +127,15 @@
       </option>
     </select>
   </p>
+  <?php if ($this->setup->i18nExists()) : ?>
+  <p>
+    <label for="languages"><?php i18n($this->id . '/LANGUAGES'); ?>: </label>
+    <?php
+      $languages = implode("\n", $general->get('languages'));
+    ?>
+    <textarea class="text" name="languages" style="width: 94%; height: 80px;"><?php echo $languages; ?></textarea>
+  </p>
+  <?php endif; ?>
 </div>
 
 <div class="rightsec">

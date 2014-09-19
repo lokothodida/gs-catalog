@@ -25,6 +25,10 @@ class CatalogSettingsGeneral {
         $this->data[$field] = false;
       } elseif ($setting == 'y') {
         $this->data[$field] = true;
+      } elseif ($field == 'languages') {
+        // Turn langauges into an array
+        $langauges = explode("\n",  $setting);
+        $this->data[$field] = array_map('trim', $langauges);
       } else {
         $this->data[$field] = $setting;
       }

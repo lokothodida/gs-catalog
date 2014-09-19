@@ -2,8 +2,16 @@
   // choose correct product id
   $productId = $_GET['products'];
 
-  if ($this->setup->i18nExists() && isset($_GET['lang']) && $_GET['lang'] != return_i18n_default_language()) {
+  if ($this->setup->i18nExists() && !empty($_GET['lang']) && $_GET['lang'] != return_i18n_default_language()) {
     $productId .= '_' . $_GET['lang'];
+  }
+
+  // Create the correct product language (if it doesn't exist)
+  if (
+    file_exists($basefile = $this->dataDir . 'products/' . $_GET['products'] . '.xml') &&
+    !file_exists($copyfile = $this->dataDir . 'products/' . $productId . '.xml')
+  ) {
+    copy($basefile, $copyfile);
   }
 
   // save changes

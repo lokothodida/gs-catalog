@@ -119,6 +119,11 @@
 
   $prods = $products->getProducts($getProductsParams);
 ?>
+<style>
+  option.available { color: green; }
+  option.notAvailable { color: red; }
+</style>
+
 <form>
   <h3 class="floated"><?php i18n($this->id . '/PRODUCTS'); ?></h3>
   <div class="edit-nav clearfix">
@@ -163,6 +168,7 @@
       <?php
         foreach ($prods as $product) :
           if ($this->setup->i18nExists()) {
+            $availableLangs = $generalSettings->get('languages');
             $languages = $product['language'];
             $product   = $product['language'][return_i18n_default_language()];
           }
@@ -171,8 +177,8 @@
         <?php if ($this->setup->i18nExists()) : ?>
           <td>
             <select class="text selectLanguage" style="width: 50px;">
-              <?php foreach ($languages as $lang => $pr) : ?>
-                <option>
+              <?php foreach ($availableLangs as $lang) : ?>
+                <option <?php if (array_key_exists($lang, $languages)) echo 'class="available"'; else echo 'class="notAvailable"'; ?>>
                   <?php echo $lang; ?>
                 </option>
               <?php endforeach; ?>
