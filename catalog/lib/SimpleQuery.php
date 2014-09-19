@@ -182,7 +182,6 @@ class SimpleQuery {
         break;
       // in
       case '$in':
-        var_dump($value, $properties); echo '<br><br>';
         $success = in_array($value, $properties);
         break;
       // check if value exists

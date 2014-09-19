@@ -80,9 +80,9 @@ class CatalogSetup {
   }
   
   // Adding sidebars
-  public function addSidebar($name, $flag = false, $page = null) {
+  public function addSidebar($name, $action = false, $page = null, $flag = true) {
     if ($page == null) $page = $this->id;
-    add_action($page . '-sidebar','createSideMenu', array($this->id, i18n_r($name), $flag));
+    add_action($page . '-sidebar','createSideMenu', array($this->id, i18n_r($name), $action, $flag));
   }
 
   public function registerFrontEnd($plugin) {

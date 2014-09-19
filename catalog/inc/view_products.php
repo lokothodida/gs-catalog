@@ -108,10 +108,17 @@
   );
 
   $products = new CatalogProducts($productsParams);
+  $getProductsParams = array();
 
-  $filter = isset($_GET['filter']) && $_GET['filter'] != 'all' ? $_GET['filter'] : false;
-
-  $getProductsParams = array('filter' => $filter);
+  if (isset($_GET['filter'])) {
+    if ($_GET['filter'] == 'all') {
+      //$getProductsParams['categories'] = array($_GET['filter']);
+    } elseif ($_GET['filter'] == '') {
+      $getProductsParams['categories'] = array();
+    } else {
+      $getProductsParams['categories'] = array($_GET['filter']);
+    }
+  }
 
   if ($this->setup->i18nExists()) {
     $getProductsParams['languages'] = true;

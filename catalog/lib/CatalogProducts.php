@@ -32,18 +32,23 @@ class CatalogProducts {
 
     // category
     if (isset($params['categories'])) {
-      if (!is_array($params['categories'])) {
-        $params['categories'] = array($params['categories']);
-      }
+      if (empty($params['categories'])) {
+        // no categories
+        $query['categories']['$eq='] = array();
+      } else {
+        // searching for particular categories
+        if (!is_array($params['categories'])) {
+          $params['categories'] = array($params['categories']);
+        }
 
-      $query['categories']['$has'] = $params['categories'];
-      $query['categories']['$cs'] = false;
+        $query['categories']['$has'] = $params['categories'];
+        $query['categories']['$cs'] = false;
+      }
     }
 
     $sort = array();
 
     $results = $sq->query($query, $sort);
-
 
     // languages
     if (!empty($params['languages'])) {
