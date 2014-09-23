@@ -29,6 +29,8 @@ $i18n = array(
   'LANGUAGE'        => 'Language',
   'LANGUAGES'       => 'Languages',
   'ERRORS'          => 'Errors',
+  'SEARCH'          => 'Search',
+  'ITEM'            => 'Item',
   'NO_RESULTS'      => 'No results',
   
   // admin panel terms

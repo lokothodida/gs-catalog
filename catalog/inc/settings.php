@@ -7,7 +7,7 @@
   );
 ?>
 
-<h3 class="floated"><?php i18n($this->id . '/OPTIONS'); ?></h3>
+<h3 class="floated"><?php i18n('SETTINGS'); ?></h3>
 <div class="edit-nav clearfix">
   <a href="load.php?id=<?php echo $this->id; ?>&settings=cart" <?php echo $classcurrent['cart']; ?>><?php i18n($this->id . '/CART'); ?></a>
   <a href="load.php?id=<?php echo $this->id; ?>&settings=cfields" <?php echo $classcurrent['cfields']; ?>><?php i18n($this->id . '/CUSTOM_FIELDS'); ?></a>

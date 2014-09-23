@@ -100,9 +100,9 @@
 
   $general   = new CatalogSettingsGeneral($this->dataDir . '/general.xml');
   $theme = new CatalogSettingsTheme(array('file' => $this->dataDir . '/themes.xml', 'directory' => $this->dataDir . '/themes/'));
-  //$themes    = $templates->getThemes();
-  //$current   = $templates->getCurrentTheme();
-  //$templates = $templates->getTemplates();
+  $themes    = $theme->getThemes();
+  $current   = $theme->getCurrentTheme();
+  $templates = $theme->getTemplates();
 ?>
 <!--select theme/template-->
 <?php if (isset($_GET['export']) && isset($template)) : ?>
@@ -115,8 +115,8 @@
 <form action="" method="post" enctype="multipart/form-data">
   <p>
     <select id="theme_select" class="text" style="width:200px;" name="template">
-      <?php foreach ($themes as $theme) : ?>
-      <option <?php if ($theme == $current) echo 'selected="selected"'; ?>value="<?php echo $theme; ?>"><?php echo $theme; ?></option>
+      <?php foreach ($themes as $t) : ?>
+      <option <?php if ($t == $current) echo 'selected="selected"'; ?>value="<?php echo $t; ?>"><?php echo $t; ?></option>
       <?php endforeach; ?>
     </select>&nbsp;&nbsp;&nbsp;
     <input class="submit activate" name="submitted" value="<?php i18n('ACTIVATE_THEME'); ?>" type="submit">
@@ -153,21 +153,21 @@ $(document).ready(function() {
 
 <!-- index (header) -->
 <p>
-  <h4 style="font-weight: bold;"><?php i18n($this->id . '/INDEX_HEADER'); ?> : </h4>
+  <h4 style="font-weight: bold;"><?php i18n($this->id . '/MAIN'); ?> (<?php i18n($this->id . '/HEADER'); ?>) : </h4>
   <textarea id="indexHeader" name="indexHeader" style="height: 200px !important;"><?php echo $theme->get('indexHeader'); ?></textarea>
   <?php $textarea = 'indexHeader'; include('codemirror.php'); ?>
 </p>
 
 <!-- index (categories loop) -->
 <p>
-  <h4 style="font-weight: bold;"><?php i18n($this->id . '/INDEX_CATEGORIES'); ?> : </h4>
+  <h4 style="font-weight: bold;"><?php i18n($this->id . '/MAIN'); ?> (<?php i18n($this->id . '/CATEGORIES'); ?>) : </h4>
   <textarea id="indexCategories" name="indexCategories" style="height: 200px !important;"><?php echo $theme->get('indexCategories'); ?></textarea>
   <?php $textarea = 'indexCategories'; include('codemirror.php'); ?>
 </p>
 
 <!-- index (footer) -->
 <p>
-  <h4 style="font-weight: bold;"><?php i18n($this->id . '/INDEX_FOOTER'); ?> : </h4>
+  <h4 style="font-weight: bold;"><?php i18n($this->id . '/MAIN'); ?> (<?php i18n($this->id . '/FOOTER'); ?>) : </h4>
   <textarea id="indexFooter" name="indexFooter" style="height: 200px !important;"><?php echo $theme->get('indexFooter'); ?></textarea>
   <?php $textarea = 'indexFooter'; include('codemirror.php'); ?>
 </p>
@@ -188,7 +188,7 @@ $(document).ready(function() {
 
 <!--search item (product)-->
 <p>
-  <h4 style="font-weight: bold;"><?php i18n($this->id . '/SEARCH_ITEM'); ?> : </h4>
+  <h4 style="font-weight: bold;"><?php i18n($this->id . '/SEARCH'); ?> (<?php i18n($this->id . '/ITEM'); ?>): </h4>
   <textarea id="searchProduct" name="searchProduct" style="height: 200px !important;"><?php echo $theme->get('searchProduct'); ?></textarea>
   <?php $textarea = 'searchProduct'; include('codemirror.php'); ?>
 </p>
