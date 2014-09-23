@@ -121,7 +121,7 @@
 
   <!--in stock?-->
   <div class="stock">
-    <?php echo ($product->getField('instock')) ? : 'In Stock' : 'Out of Stock'; ?>
+    <?php echo ($product->getField('instock')) ? 'In Stock' : 'Out of Stock'; ?>
   </div>
 </div>]]></searchProduct>
 <footer><![CDATA[]]></footer>
