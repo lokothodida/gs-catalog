@@ -26,6 +26,8 @@ $i18n = array(
   'DELETE'          => 'Delete',
   'CLEAR'           => 'Clear',
   'RESET'           => 'Reset',
+  'LANGUAGE'        => 'Language',
+  'LANGUAGES'       => 'Languages',
   
   // admin panel terms
   'BASIC_USAGE'     => 'Basic Usage',
