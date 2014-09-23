@@ -34,9 +34,12 @@ class CatalogCategory extends CatalogItem {
     $categories = (array) $this->getField('categories');
     $implode = implode('/', $categories);
 
+    $parsedId = $this->parseId($this->getField('id'));
+    $id = $this->generalSettings->get('slugged') ? $this->getField('id') : $parsedId['numeric'];
+
     $this->urlCategory = str_replace(
       array('/%parents%', '%category%'),
-      array($implode, $this->getField('id')),
+      array($implode, $id),
       $this->generalSettings->get('urlCategory'));
   }
 }

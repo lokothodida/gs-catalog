@@ -128,15 +128,10 @@ class CatalogRouter {
         // non-slugged version
         $productFile = glob($this->dataDir . 'products/' . $id . '*.xml');
         $productFile = reset($productFile);
+        $id = basename($productFile, '.xml');
       } else {
         // slugged version
-        $productFile = $this->dataDir . 'products/' . $id . '.xml';
       }
-
-      $productParams = array(
-        'file' => $productFile,
-        'settings' => $this->settings,
-      );
 
       // error page if product doesn't exist
       if (!file_exists($productFile)) {
@@ -144,8 +139,6 @@ class CatalogRouter {
         $params['message'] = $this->generalSettings->get('producterror');
         return $params;
       }
-
-      $params['product'] = new CatalogProduct($productParams);
 
       $productsParams = array(
         'wildcard' => $this->dataDir . 'products/*.xml',

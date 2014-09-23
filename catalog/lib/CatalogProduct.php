@@ -67,9 +67,12 @@ class CatalogProduct extends CatalogItem {
 
   // Set the URL
   private function setUrl() {
+    $parsedId = $this->parseId($this->getField('id'));
+    $id = $this->generalSettings->get('slugged') ? $this->getField('id') : $parsedId['numeric'];
+
     $this->url = str_replace(
       array('/%parents%', '%product%'),
-      array('', $this->getField('id')),
+      array('', $id),
       $this->generalSettings->get('urlProduct')
     );
   }
