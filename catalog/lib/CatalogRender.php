@@ -170,7 +170,7 @@ class CatalogRender {
       // search form
       ?>
       <form method="get">
-        <input type="text" name="text">
+        <input type="text" name="text" value="<?php echo $params['query']; ?>">
         <input type="submit">
       </form>
       <?php
@@ -183,6 +183,8 @@ class CatalogRender {
       echo $params['navigation'];
     }
 
+    echo '<div class="searchresults">';
+
     foreach ($results as $product) {
       // display category and products
       $this->executeTemplate($this->themeSettings->get('searchProduct'),
@@ -191,6 +193,8 @@ class CatalogRender {
         )
       );
     }
+
+    echo '</div>';
 
     // pagination
     if ($pagination != 'top') {
