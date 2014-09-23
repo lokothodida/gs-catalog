@@ -97,8 +97,10 @@ class CatalogCategories {
     // sort
     if (isset($params['sort'])) {
       //$categories = $this->sortcategories($categories, $params['sort']);
+    } else {
+      // by default, sort by the order parameter
+      $categories = $this->sortByOrder($categories);
     }
-
 
     // hierarchical structure
     if (isset($params['hierarchical']) && $params['hierarchical']) {
@@ -125,6 +127,18 @@ class CatalogCategories {
         'settings' => $this->settings,
       ));
     }
+  }
+
+  // Sort by order
+  private function sortByOrder($categories) {
+    uasort($categories, array($this, 'sortByOrderImp'));
+    return $categories;
+  }
+
+  // Implementation of sorting by order
+  private function sortByOrderImp(CatalogCategory $a, CatalogCategory $b) {
+    $result = $a->getField('order') - $b->getField('order');
+    return $result;
   }
 }
 
