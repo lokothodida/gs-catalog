@@ -171,7 +171,7 @@ class CatalogRender {
   // Error page
   private function renderError($params) {
     // error message
-    echo $this->generalSettings->get('pageerror');
+    echo $params['message'];
 
     // title
     $this->pageTitle = $this->generalSettings->get('title') . ' : 404';

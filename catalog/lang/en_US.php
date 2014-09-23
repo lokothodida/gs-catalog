@@ -28,6 +28,8 @@ $i18n = array(
   'RESET'           => 'Reset',
   'LANGUAGE'        => 'Language',
   'LANGUAGES'       => 'Languages',
+  'ERRORS'          => 'Errors',
+  'NO_RESULTS'      => 'No results',
   
   // admin panel terms
   'BASIC_USAGE'     => 'Basic Usage',

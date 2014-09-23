@@ -69,6 +69,10 @@ class CatalogSetup {
     return $success;
   }
 
+  public function makeDefaultFiles($overwrite = false) {
+    return $this->copyDefaultFiles($overwrite);
+  }
+
   // Adding filters
   public function addFilter($name, $method) {
     add_filter($name, array($this, $method));

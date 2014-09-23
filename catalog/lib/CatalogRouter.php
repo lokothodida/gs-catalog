@@ -65,6 +65,7 @@ class CatalogRouter {
       // error page if category doesn't exist
       if (!file_exists($categoryFile)) {
         $params = $this->setToError($params);
+        $params['message'] = $this->generalSettings->get('categoryerror');
         return $params;
       }
 
@@ -108,8 +109,14 @@ class CatalogRouter {
         'url'          => $url,
       ));
 
-      $params['products'] = $results['results'];
-      $params['navigation'] = $results['navigation'];
+      // fix results display and navigation
+      if (count($params['products']) < $this->generalSettings->get('productsperpage')) {
+        $params['products'] = $results['results'];
+        $params['navigation'] = '';
+      } else {
+        $params['products'] = $results['results'];
+        $params['navigation'] = $results['navigation'];
+      }
     } elseif ($this->pageType == 'product') {
       // product
       // Remove extension
@@ -134,6 +141,7 @@ class CatalogRouter {
       // error page if product doesn't exist
       if (!file_exists($productFile)) {
         $params = $this->setToError($params);
+        $params['message'] = $this->generalSettings->get('producterror');
         return $params;
       }
 

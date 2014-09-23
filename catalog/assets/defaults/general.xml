@@ -6,7 +6,10 @@
   <pagination><![CDATA[both]]></pagination>
   <view><![CDATA[detailed]]></view>
   <categoryview><![CDATA[hierarchical]]></categoryview>
-  <pageerror><![CDATA[<p>Sorry, no products here</p>]]></pageerror>
+  <pageerror><![CDATA[<p>Page does not exist.</p>]]></pageerror>
+  <categoryerror><![CDATA[<p>Category does not exist.</p>]]></categoryerror>
+  <producterror><![CDATA[<p>Product does not exist.</p>]]></producterror>
+  <noresults><![CDATA[<p>No results.</p>]]></noresults>
   <slugged><![CDATA[y]]></slugged>
   <internalsearch><![CDATA[]]></internalsearch>
   <i18nsearch><![CDATA[]]></i18nsearch>

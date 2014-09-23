@@ -8,7 +8,6 @@
       'pagination',
       'view',
       'categoryview',
-      'pageerror',
       'internalsearch',
       'i18nsearch',
       'slugged',
@@ -16,6 +15,11 @@
       'wysiwyg',
       'wysiwygtoolbar',
       'languages',
+      // errors
+      'pageerror',
+      'categoryerror',
+      'producterror',
+      'noresults',
       );
     $xml = new SimpleXMLExtended('<options/>');
     foreach ($fields as $k => $field) {
@@ -158,10 +162,27 @@
 
 <div class="clear"></div>
 
-<label for="productsperpage"><?php i18n($this->id . '/ERROR_MESSAGE'); ?>: </label>
-<textarea id="pageerror" name="pageerror" style="height: 200px;"><?php echo $general->get('pageerror'); ?></textarea>
+<h3><?php i18n($this->id . '/ERRORS'); ?></h3>
+<p>
+  <label for="pageerror">404: </label>
+  <textarea id="pageerror" name="pageerror" style="height: 200px;"><?php echo $general->get('pageerror'); ?></textarea>
+  <?php $textarea = 'pageerror'; $height = 200; include('ckeditor.php'); ?>
+</p>
 
-<?php
-  $textarea = 'pageerror';
-  include('ckeditor.php');
-?>
+<p>
+  <label for="categoryerror"><?php i18n($this->id . '/CATEGORIES'); ?>: </label>
+  <textarea id="categoryerror" name="categoryerror" style="height: 200px;"><?php echo $general->get('categoryerror'); ?></textarea>
+  <?php $textarea = 'categoryerror'; $height = 200; include('ckeditor.php'); ?>
+</p>
+
+<p>
+  <label for="producterror"><?php i18n($this->id . '/PRODUCTS'); ?>: </label>
+  <textarea id="producterror" name="producterror" style="height: 200px;"><?php echo $general->get('producterror'); ?></textarea>
+  <?php $textarea = 'producterror'; $height = 200; include('ckeditor.php'); ?>
+</p>
+
+<p>
+  <label for="noresults"><?php i18n($this->id . '/NO_RESULTS'); ?>: </label>
+  <textarea id="noresults" name="noresults" style="height: 200px;"><?php echo $general->get('noresults'); ?></textarea>
+  <?php $textarea = 'noresults'; $height = 200; include('ckeditor.php'); ?>
+</p>
