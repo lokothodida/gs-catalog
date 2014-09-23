@@ -32,23 +32,23 @@
 
 <h3><?php i18n($this->id . '/CATEGORIES'); ?></h3>
 <ul>
-  <li><a href=""><?php i18n($this->id . '/VIEW'); ?></a></li>
-  <li><a href=""><?php i18n($this->id . '/CREATE'); ?></a></li>
+  <li><a href="<?php echo $this->adminUrl; ?>&categories"><?php i18n($this->id . '/VIEW'); ?></a></li>
+  <li><a href="<?php echo $this->adminUrl; ?>&categories=create"><?php i18n($this->id . '/CREATE'); ?></a></li>
 </ul>
 
 <h3><?php i18n($this->id . '/PRODUCTS'); ?></h3>
 <ul>
-  <li><a href=""><?php i18n($this->id . '/VIEW'); ?></a></li>
-  <li><a href=""><?php i18n($this->id . '/CREATE'); ?></a></li>
+  <li><a href="<?php echo $this->adminUrl; ?>&products"><?php i18n($this->id . '/VIEW'); ?></a></li>
+  <li><a href="<?php echo $this->adminUrl; ?>&products=create"><?php i18n($this->id . '/CREATE'); ?></a></li>
 </ul>
 
 <h3><?php i18n('SETTINGS'); ?></h3>
 <ul>
   <li><a href="load.php?id=<?php echo $this->id; ?>&home=resetoptions" onclick="resetOptions(); return false;"><?php i18n($this->id . '/RESET'); ?></a></li>
-  <li><a href=""><?php i18n($this->id . '/GENERAL'); ?></a></li>
-  <li><a href=""><?php i18n($this->id . '/TEMPLATES'); ?></a></li>
-  <li><a href=""><?php i18n($this->id . '/CUSTOM_FIELDS'); ?></a></li>
-  <li><a href=""><?php i18n($this->id . '/CART'); ?></a></li>
+  <li><a href="<?php echo $this->adminUrl; ?>&settings=general"><?php i18n($this->id . '/GENERAL'); ?></a></li>
+  <li><a href="<?php echo $this->adminUrl; ?>&settings=templates"><?php i18n($this->id . '/TEMPLATES'); ?></a></li>
+  <li><a href="<?php echo $this->adminUrl; ?>&settings=cfields"><?php i18n($this->id . '/CUSTOM_FIELDS'); ?></a></li>
+  <li><a href="<?php echo $this->adminUrl; ?>&settings=cart"><?php i18n($this->id . '/CART'); ?></a></li>
 </ul>
 
 <h3><?php i18n('SIDE_DOCUMENTATION'); ?></h3>
