@@ -21,8 +21,16 @@ $i18n = array(
   'NAME'            => 'Name',
   'OPTIONS'         => 'Options',
   'FEATURED'        => 'Featured',
+  'VIEW'            => 'View',
+  'CREATE'          => 'Create',
+  'DELETE'          => 'Delete',
+  'CLEAR'           => 'Clear',
+  'RESET'           => 'Reset',
   
   // admin panel terms
+  'BASIC_USAGE'     => 'Basic Usage',
+  'ADVANCED_USAGE'  => 'Advanced Usage',
+  'API'             => 'API',
   'RESET_OPTIONS'   => 'Reset Options',
   'RESET_OP_SURE'   => 'This action is irreversible and will reset all of the current settings that you have. Are you sure?',
   'RESET_OP_SUCC'   => 'Options reset successfully.',
