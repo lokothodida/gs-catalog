@@ -120,11 +120,14 @@ class CatalogRender {
   private function renderCategory($params) {
     $category = $params['category'];
     $products = $params['products'];
+    $pagination = $this->generalSettings->get('pagination');
 
     $this->pageTitle = $category->getField('title');
 
     // pagination
-    echo $params['navigation'];
+    if ($pagination != 'bottom') {
+      echo $params['navigation'];
+    }
 
     // display category and products
     $this->executeTemplate($this->themeSettings->get('category'),
@@ -135,7 +138,9 @@ class CatalogRender {
     );
 
     // pagination
-    echo $params['navigation'];
+    if ($pagination != 'top') {
+      echo $params['navigation'];
+    }
   }
 
   // Product
