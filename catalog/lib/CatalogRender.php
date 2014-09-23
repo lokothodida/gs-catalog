@@ -34,8 +34,8 @@ class CatalogRender {
 
   // Display the page
   public function displayPage() {
-    $page   = $this->router->getPageType();
     $params = $this->router->getParams();
+    $page   = $this->router->getPageType();
 
     if ($this->inCatalog()) {
       ob_start();
@@ -166,6 +166,15 @@ class CatalogRender {
   // Featured page
   private function renderFeatured($params) {
     // ...
+  }
+
+  // Error page
+  private function renderError($params) {
+    // error message
+    echo $this->generalSettings->get('pageerror');
+
+    // title
+    $this->pageTitle = $this->generalSettings->get('title') . ' : 404';
   }
 
   // Evaluate

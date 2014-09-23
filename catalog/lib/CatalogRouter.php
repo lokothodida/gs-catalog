@@ -62,6 +62,12 @@ class CatalogRouter {
         $categoryFile = $this->dataDir . 'categories/' . $id . '.xml';
       }
 
+      // error page if category doesn't exist
+      if (!file_exists($categoryFile)) {
+        $params = $this->setToError($params);
+        return $params;
+      }
+
       $categoryParams = array(
         'file' => $categoryFile,
         'settings' => $this->settings,
@@ -124,6 +130,12 @@ class CatalogRouter {
         'file' => $productFile,
         'settings' => $this->settings,
       );
+
+      // error page if product doesn't exist
+      if (!file_exists($productFile)) {
+        $params = $this->setToError($params);
+        return $params;
+      }
 
       $params['product'] = new CatalogProduct($productParams);
 
@@ -214,6 +226,15 @@ class CatalogRouter {
     $string = $explode[0];
 
     return $string;
+  }
+
+  // Set page to error
+  private function setToError(array $params) {
+    $this->pageType = 'error';
+
+    // ...fix any custom params for error...
+
+    return $params;
   }
 }
 
