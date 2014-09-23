@@ -2,7 +2,7 @@
 
 /**
  * Title:         PHP SimpleQuery
- * Version:       0.1.1
+ * Version:       0.1.2
  * Description:   Perform queries on PHP arrays
  * Author:        Lawrence Okoth-Odida
  * Documentation: https://github.com/lokothodida/php-simplequery/wiki/
@@ -126,17 +126,19 @@ class SimpleQuery {
     }
   }
 
+  // Lower case
+  private function toLower($value) {
+    return is_array($value) ? array_map('strtolower', $value) : strtolower($value);
+  }
+
   // Validate
   private function validate($value, $cs, $setting, $properties) {
     $success = false;
 
     // Case-sensitive switch
     if (!$cs) {
-      if (is_array($value)) {
-        $value = array_map('strtolower', $value);
-      } else {
-        $value = strtolower($value);
-      }
+      $value = $this->toLower($value);
+      $properties = $this->toLower($properties);
     }
 
     // Check if we have a negation in place
