@@ -32,6 +32,8 @@ class CatalogProduct extends CatalogItem {
       }
     } elseif ($field == 'url') {
       $value = $this->getUrl();
+    } elseif ($field == '__text') {
+      $value = implode(' ', $this->item);
     }
 
     // Parse according to $type

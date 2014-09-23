@@ -5,7 +5,8 @@
  */
 class CatalogRouter {
   /** properties */
-  private $url,
+  private $id,
+          $url,
           $path,
           $siteUrl,
           $settings,
@@ -16,6 +17,7 @@ class CatalogRouter {
   /** methods */
   // Constructor
   public function __construct($params) {
+    $this->id              = $params['id'];
     $this->url             = $params['url'];
     $this->siteUrl         = $params['siteUrl'];
     $this->settings        = $params['settings'];
@@ -167,6 +169,52 @@ class CatalogRouter {
         'wildcard' => $this->dataDir . 'categories/*.xml',
         'settings' => $this->settings,
       ));
+    } elseif ($this->pageType == 'search') {
+      // search
+      $params['title'] = $this->generalSettings->get('title') . ' : ' . i18n_r($this->id . '/SEARCH');
+
+      $productsParams = array(
+        'wildcard' => $this->dataDir . 'products/*.xml',
+        'settings' => $this->settings,
+        'i18n' => $this->setup->i18nExists(),
+      );
+
+      $params['products'] = new CatalogProducts($productsParams);
+
+      $getProductsParams = array();
+      $getProductsParams['search'] = isset($_GET['text']) ? $_GET['text'] : null;
+
+      // language
+      if ($this->setup->i18nExists()) {
+        $lang = return_i18n_languages();
+        $lang = $lang[0];
+        $getProductsParams['languages'] = $lang;
+      }
+
+      $params['products'] = $params['products']->getProducts($getProductsParams);
+
+      // pagination
+      $paginate = new ArrayPaginate($params['products']);
+
+      $_GET['p'] = isset($_GET['p']) ? $_GET['p'] : 1;
+
+      // set up the pagination url
+      $url = $this->removeQueryString($this->url) . '?p=%page%';
+
+      $results = $paginate->paginate(array(
+        'itemsPerPage' => $this->generalSettings->get('productsperpage'),
+        'currentPage'  => $_GET['p'],
+        'url'          => $url,
+      ));
+
+      // fix results display and navigation
+      if (count($params['products']) < $this->generalSettings->get('productsperpage')) {
+        $params['products'] = $results['results'];
+        $params['navigation'] = '';
+      } else {
+        $params['products'] = $results['results'];
+        $params['navigation'] = $results['navigation'];
+      }
     } else {
       // index
       $params['categories'] = new CatalogCategories(array(

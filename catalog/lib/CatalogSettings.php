@@ -11,6 +11,7 @@ class CatalogSettings {
   // Constructor - load the settings
   public function __construct($directory) {
     $this->settings['general'] = new CatalogSettingsGeneral($directory . 'general.xml');
+    $this->settings['fields']  = new CatalogSettingsFields(array('file' => $directory . '/fields.xml'));
     $this->settings['theme']   = new CatalogSettingsTheme(array(
       'directory' => $directory . 'themes/',
       'file'      => $directory . 'themes.xml',

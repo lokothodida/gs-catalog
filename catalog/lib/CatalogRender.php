@@ -159,8 +159,43 @@ class CatalogRender {
 
   // Search page
   private function renderSearch($params) {
-    $results = $params['results'];
-    include('../inc/search.php');
+    // title
+    $this->pageTitle = $params['title'];
+
+    $results = $params['products'];
+
+    if (!empty($_POST)) {
+      // query sent
+    } else {
+      // search form
+      ?>
+      <form method="get">
+        <input type="text" name="text">
+        <input type="submit">
+      </form>
+      <?php
+    }
+
+    $pagination = $this->generalSettings->get('pagination');
+
+    // pagination
+    if ($pagination != 'bottom') {
+      echo $params['navigation'];
+    }
+
+    foreach ($results as $product) {
+      // display category and products
+      $this->executeTemplate($this->themeSettings->get('searchProduct'),
+        array(
+          'product' => $product,
+        )
+      );
+    }
+
+    // pagination
+    if ($pagination != 'top') {
+      echo $params['navigation'];
+    }
   }
 
   // Featured page

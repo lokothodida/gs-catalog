@@ -8,6 +8,7 @@ class CatalogProducts {
   /** properties */
   private $products = array(),
           $settings,
+          $fieldSettings,
           $filter,
           $categories,
           $sort,
@@ -18,6 +19,7 @@ class CatalogProducts {
   public function __construct(array $params) {
     $params['i18n'] = isset($params['i18n']) ? $params['i18n'] : false;
     $this->settings = $params['settings'];
+    $this->fieldSettings = $this->settings->get('fields');
     $this->loadProducts($params['wildcard'], $params['i18n']);
   }
 
@@ -47,6 +49,16 @@ class CatalogProducts {
     }
 
     $sort = array();
+
+    // search
+    if (isset($params['search'])) {
+      if (is_string($params['search'])) {
+        // string search all fields
+        $query = $this->setSearchQueryString($query, $params['search']);
+      } else {
+        // searching specific fields
+      }
+    }
 
     $results = $sq->query($query, $sort);
 
@@ -83,6 +95,14 @@ class CatalogProducts {
     }
     */
     return $products;
+  }
+
+  // Search a string in all fields
+  private function setSearchQueryString($query, $string) {
+    $query['__text']['$has'] = $string;
+    $query['__text']['$cs'] = false;
+
+    return $query;
   }
 
   // Sort products into langauges
