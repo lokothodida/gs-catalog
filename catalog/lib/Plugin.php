@@ -82,6 +82,7 @@ class CatalogPlugin {
   public function displayCatalog() {
     // set up the router
     $routerParams = array(
+      'id'        => $this->id,
       'url'       => 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
       'siteUrl'   => $GLOBALS['SITEURL'],
       'settings'  => $this->settings,
