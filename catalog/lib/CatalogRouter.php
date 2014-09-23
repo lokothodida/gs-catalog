@@ -131,6 +131,7 @@ class CatalogRouter {
         $id = basename($productFile, '.xml');
       } else {
         // slugged version
+        $productFile = $this->dataDir . 'products/' . $id . '.xml';
       }
 
       // error page if product doesn't exist
