@@ -182,7 +182,7 @@ class CatalogRouter {
       $params['products'] = new CatalogProducts($productsParams);
 
       $getProductsParams = array();
-      $getProductsParams['search'] = isset($_GET['text']) ? $_GET['text'] : null;
+      $getProductsParams['search'] = $params['query'] = isset($_GET['text']) ? $_GET['text'] : null;
 
       // language
       if ($this->setup->i18nExists()) {
@@ -200,6 +200,9 @@ class CatalogRouter {
 
       // set up the pagination url
       $url = $this->removeQueryString($this->url) . '?p=%page%';
+
+      // add in query string
+      $url = $this->addQueryString($url, $_GET, array('text'));
 
       $results = $paginate->paginate(array(
         'itemsPerPage' => $this->generalSettings->get('productsperpage'),
@@ -242,6 +245,17 @@ class CatalogRouter {
   // function for removing empty strings from array
   private function filterEmpty($string) {
     return !(trim($string) == '');
+  }
+
+  // Add elements from an array to a query string
+  private function addQueryString($url, $array, $keys) {
+    foreach ($keys as $k) {
+      if (isset($array[$k])) {
+        $url .= '&' . $k . '=' . $array[$k];
+      }
+    }
+
+    return $url;
   }
 
   // Parse the URL into its components and determine the action
