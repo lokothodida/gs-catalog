@@ -67,7 +67,7 @@
   // exporting a template for download
   if (isset($_GET['export'])) {
     $template = $_GET['export'] . '.xml';
-    $templatesDir = $this->dataDir . '/templates/' . $template;
+    $templatesDir = $this->dataDir . '/themes/' . $template;
     $tmpDir = $this->dataDir . '/tmp/' . $template;
 
     copy($templatesDir, $tmpDir);
@@ -131,11 +131,11 @@
 <script>
 $(document).ready(function() {
   $('.activate').click(function() {
-    window.location = '<?php echo $adminUrl; ?>&options=templates&activate=' + $('#theme_select').val();
+    window.location = '<?php echo $this->adminUrl; ?>&settings=templates&activate=' + $('#theme_select').val();
     return false;
   });
   $('.export').click(function() {
-    window.location = '<?php echo $adminUrl; ?>&options=templates&export=' + $('#theme_select').val();
+    window.location = '<?php echo $this->adminUrl; ?>&settings=templates&export=' + $('#theme_select').val();
     return false;
   });
 });
