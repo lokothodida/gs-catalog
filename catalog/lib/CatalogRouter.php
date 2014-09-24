@@ -191,7 +191,7 @@ class CatalogRouter {
         $getProductsParams['languages'] = $lang;
       }
 
-      $params['products'] = $params['products']->getProducts($getProductsParams);
+      $params['products'] = $getProductsParams['search'] ? $params['products']->getProducts($getProductsParams) : array();
 
       // pagination
       $paginate = new ArrayPaginate($params['products']);
