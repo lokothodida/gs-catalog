@@ -96,11 +96,14 @@
   );
 
   $getCategoriesParams = array(
-    // ...
+    'sort' => 'parents',
   );
 
   $categories = new CatalogCategories($categoriesParams);
   $cats = $categories->getCategories($getCategoriesParams);
+  $trail = new CatalogCategoriesTrail($cats);
+  $trail = $trail->getTrail();
+  var_dump($trail);
 ?>
 
 <h3 class="floated"><?php i18n($this->id . '/CATEGORIES'); ?></h3>
@@ -133,7 +136,9 @@
           <?php echo $slug; ?>
         </td>
         <td>
-          <a href="<?php echo $this->adminUrl; ?>&categories=<?php echo $category->getField('id'); ?>"><?php echo $category->getField('title'); ?></a>
+          <span style="padding-left: <?php echo count($trail[$category->getField('id')]) * 5; ?>px;">
+            <a href="<?php echo $this->adminUrl; ?>&categories=<?php echo $category->getField('id'); ?>"><?php echo $category->getField('title'); ?></a>
+          </span>
         </td>
         <td style="text-align: right;">
           <a href="<?php echo $category->getField('url'); ?>" target="_blank">#</a>

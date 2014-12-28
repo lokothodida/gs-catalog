@@ -95,8 +95,8 @@ class CatalogCategories {
     }
 
     // sort
-    if (isset($params['sort'])) {
-      //$categories = $this->sortcategories($categories, $params['sort']);
+    if (isset($params['sort']) && $params['sort'] == 'parents') {
+      $categories = $this->sortByParents($categories);
     } else {
       // by default, sort by the order parameter
       $categories = $this->sortByOrder($categories);
@@ -138,6 +138,19 @@ class CatalogCategories {
   // Implementation of sorting by order
   private function sortByOrderImp(CatalogCategory $a, CatalogCategory $b) {
     $result = $a->getField('order') - $b->getField('order');
+    return $result;
+  }
+
+  // Sort by parents
+  private function sortByParents($categories) {
+    uasort($categories, array($this, 'sortByParentsImp'));
+    return $categories;
+  }
+
+  // Implementation of sorting by order
+  private function sortByParentsImp(CatalogCategory $a, CatalogCategory $b) {
+    $result = $a->getField('category') - $b->getField('category')
+            + $this->sortByOrderImp($a, $b);
     return $result;
   }
 }
