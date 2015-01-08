@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<category>
+  <title><![CDATA[My First Category]]></title>
+  <parent></parent>
+  <order>0</order>
+  <description><![CDATA[Description of your first category.]]></description>
+  <image></image>
+</category>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fields>
+  <field>
+    <name><![CDATA[stock]]></name>
+    <type><![CDATA[int]]></type>
+    <index><![CDATA[]]></index>
+    <label><![CDATA[Stock]]></label>
+    <default><![CDATA[]]></default>
+  </field>
+  <field>
+    <name><![CDATA[price]]></name>
+    <type><![CDATA[]]></type>
+    <index><![CDATA[]]></index>
+    <label><![CDATA[Price]]></label>
+    <default><![CDATA[0.00]]></default>
+  </field>
+  <field>
+    <name><![CDATA[image]]></name>
+    <type><![CDATA[image]]></type>
+    <index><![CDATA[]]></index>
+    <label><![CDATA[Image]]></label>
+    <default><![CDATA[http://]]></default>
+  </field>
+</fields>

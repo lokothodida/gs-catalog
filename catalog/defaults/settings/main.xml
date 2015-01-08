@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+  <title><![CDATA[Catalog]]></title>
+  <slug><![CDATA[catalog]]></slug>
+  <productsperpage>0</productsperpage>
+  <pagination>5</pagination>
+  <view></view>
+  <categoryview></categoryview>
+  <internalsearch></internalsearch>
+  <i18nsearch></i18nsearch>
+  <slugged></slugged>
+  <wysiwyg></wysiwyg>
+  <wysiwygtoolbar></wysiwygtoolbar>
+  <languages><![CDATA[en]]></languages>
+  <pageerror></pageerror>
+  <categoryerror></categoryerror>
+  <producterror></producterror>
+  <noresults></noresults>
+</settings>

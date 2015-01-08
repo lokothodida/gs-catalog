@@ -1,0 +1,1 @@
+<h3><?php i18n('catalog/OVERVIEW'); ?></h3>
