@@ -2,8 +2,9 @@
 <settings>
   <title><![CDATA[Catalog]]></title>
   <slug><![CDATA[catalog]]></slug>
-  <productsperpage>0</productsperpage>
-  <pagination>5</pagination>
+  <productsperpage>6</productsperpage>
+  <pagination>top</pagination>
+  <template>template.php</template>
   <view></view>
   <categoryview></categoryview>
   <internalsearch></internalsearch>

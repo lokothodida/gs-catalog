@@ -52,7 +52,7 @@ $fieldHtml = '
   <th><?php i18n('catalog/LABEL'); ?></th>
   <th><?php i18n('catalog/DEFAULT'); ?></th>
   <th><?php i18n('catalog/INDEX'); ?></th>
-  <th style="text-align: center;"><?php i18n('catalog/OPTIONS'); ?></th>
+  <th></th>
   </tr>
   </thead>
   <tbody id="fields">
@@ -77,7 +77,7 @@ $fieldHtml = '
   </tbody>
   <tbody id="fieldsoptions">
   <tr>
-  <td colspan="100%"><a href="#" onclick="addField(); return false;"><?php i18n('catalog/ADD_FIELD'); ?></a></td>
+  <td colspan="100%"><a href="#" onclick="addField(); return false;">+</a></td>
   </tr>
   </tbody>
   </table>
@@ -95,19 +95,18 @@ $fieldHtml = '
   $('#customfields tbody').sortable();
   // function to add a field
   function addField() {
-  var tbody = document.getElementById('fields');
-  tbody.innerHTML = tbody.innerHTML + <?php echo json_encode(str_replace(array('%name%', '%default%', '%label%'), '', $fieldHtml)); ?>;
+    $('#fields').append(<?php echo json_encode(str_replace(array('%name%', '%default%', '%label%'), '', $fieldHtml)); ?>);
   }
   function deleteField(linknode) {
-  var tr = linknode.parentNode.parentNode;
-  tr.parentNode.removeChild(tr);
+    var tr = linknode.parentNode.parentNode;
+    tr.parentNode.removeChild(tr);
   }
   function validateOptions() {
-  var names = document.getElementsByClassname("fieldname");
-  for (name in names) {
-  if (names[name] == "") return false;
-  }
-  return true;
+    var names = document.getElementsByClassname("fieldname");
+    for (name in names) {
+      if (names[name] == "") return false;
+    }
+    return true;
   }
 
 </script>

@@ -21,11 +21,19 @@ $(document).ready(function() {
     return false;
   });
   $('#tab-container').liteTabs({ width: '100%'});
+  $('#change-theme').change(function() {
+    var theme = $(this).val();
+    window.location = '<?php echo CATALOGADMINURL; ?>&settings=theme&change=' + theme;
+  });
 });
 </script>
 
 <style>
-ul.etabs { margin: 0 !important; padding: 0 !important; overflow: hidden; }
+ul.etabs {
+  margin: 0 !important;
+  padding: 4px !important;
+  overflow: hidden;
+}
 .tab {
   display: block;
   float: left;
@@ -64,7 +72,17 @@ ul.etabs { margin: 0 !important; padding: 0 !important; overflow: hidden; }
 
 </style>
 
+<p>
+  <h3 style="font-size: 16px;"><?php i18n('catalog/CHANGE_THEME'); ?></h3>
+  <select id="change-theme">
+    <?php foreach ($themes as $theme) : ?>
+    <option <?php if ($settings['current'] == $theme) echo 'selected'; ?>><?php echo $theme; ?></option>
+    <?php endforeach; ?>
+  </select>
+</p>
+
 <form action="" method="post">
+  <h3 style="font-size: 16px;"><?php i18n('catalog/EDIT_CURRENT_THEME'); ?></h3>
   <input type="hidden" name="editTheme"/>
   <input type="hidden" name="current" value="<?php echo $settings['current']; ?>"/>
 

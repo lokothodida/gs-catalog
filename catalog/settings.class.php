@@ -2,6 +2,9 @@
 
 class CatalogSettings {
   private static $settings = array();
+  private static $mainDefaults = array(
+    'template' => '',
+  );
   private static $themeFields = array(
     'header',
     'indexheader',
@@ -26,6 +29,12 @@ class CatalogSettings {
         $tmp[$field] = (string) $value;
       }
 
+      foreach (self::$mainDefaults as $name => $default) {
+        if (!isset($tmp[$name])) {
+          $tmp[$name] = $default;
+        }
+      }
+      
       self::$settings[$setting] = $tmp;
     }
     return self::$settings[$setting];
@@ -122,6 +131,15 @@ class CatalogSettings {
     return (bool) $xml->saveXML($filename);
   }
 
+  public static function changeTheme($theme) {
+    $filename = CATALOGDATAPATH . '/settings/theme.xml';
+    $xml = new SimpleXMLExtended('<theme/>');
+
+    self::addCData($xml, 'current', $theme);
+
+    return (bool) $xml->saveXML($filename);
+  }
+  
   public static function editSettingsFields(array $data) {
     $filename = CATALOGDATAPATH . '/settings/fields.xml';
     $xml = new SimpleXMLExtended('<fields/>');

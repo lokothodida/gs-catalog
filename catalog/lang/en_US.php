@@ -17,8 +17,17 @@ $i18n['SETTINGS'] = 'Settings';
 $i18n['CART'] = 'Cart';
 $i18n['FIELDS'] = 'Fields';
 $i18n['THEME'] = 'Theme';
+$i18n['CHANGE_THEME'] = 'Change Theme';
+$i18n['EDIT_CURRENT_THEME'] = 'Edit Current Theme';
+$i18n['TEMPLATE'] = 'Template';
 $i18n['IMAGE'] = 'Image';
 $i18n['PARENT'] = 'Parent';
+$i18n['DELETE'] = 'Delete';
+
+$i18n['ERROR'] = 'Error';
+$i18n['VIEW'] = 'View';
+$i18n['NUM_CATEGORIES'] = '%s categories';
+$i18n['NUM_PRODUCTS'] = '%s products';
 
 // Settings
 $i18n['CREATE'] = 'Create';
@@ -42,6 +51,7 @@ $i18n['SEARCH'] = 'Search';
 $i18n['INTERNAL_SEARCH'] = 'Internal Search';
 $i18n['I18N_SEARCH'] = 'i18n Search';
 $i18n['LANGUAGES'] = 'Languages';
+$i18n['LANGUAGE'] = 'Language';
 $i18n['ERRORS'] = 'Errors';
 $i18n['NO_RESULTS'] = 'No results';
 
@@ -66,6 +76,30 @@ $i18n['HEADER'] = 'Header';
 $i18n['FOOTER'] = 'Footer';
 $i18n['SEARCH'] = 'Search';
 $i18n['CSS'] = 'CSS';
+
+// Admin error messages
+$i18n['ADMIN_CATEGORY_CREATE_SUCC'] = 'Category created successfully.';
+$i18n['ADMIN_CATEGORY_CREATE_ERROR'] = 'Error creating category.';
+$i18n['ADMIN_CATEGORY_EDIT_SUCC'] = 'Category edited successfully.';
+$i18n['ADMIN_CATEGORY_EDIT_ERROR'] = 'Error editing category.';
+$i18n['ADMIN_CATEGORY_DELETE_CONFIRM'] = 'Are you sure that you want to delete category %s?';
+$i18n['ADMIN_CATEGORY_DELETE_SUCC'] = 'Category deleted successfully.';
+$i18n['ADMIN_CATEGORY_DELETE_ERROR'] = 'Error deleting category.';
+$i18n['ADMIN_CATEGORY_INDEX_SUCC'] = 'Categories numerically indexed successfully.';
+$i18n['ADMIN_CATEGORY_INDEX_ERROR'] = 'Error enumerating categories.';
+$i18n['ADMIN_CATEGORY_ORDER_SUCC'] = 'Categories reordered successfully.';
+$i18n['ADMIN_CATEGORY_ORDER_ERROR'] = 'Error reordering categories.';
+$i18n['ADMIN_PRODUCT_CREATE_SUCC'] = 'Product added successfully.';
+$i18n['ADMIN_PRODUCT_CREATE_ERROR'] = 'Error adding product.';
+$i18n['ADMIN_PRODUCT_EDIT_SUCC'] = 'Product edited successfully.';
+$i18n['ADMIN_PRODUCT_EDIT_ERROR'] = 'Error editing product.';
+$i18n['ADMIN_PRODUCT_DELETE_CONFIRM'] = 'Are you sure that you want to delete product %s?';
+$i18n['ADMIN_PRODUCT_DELETE_SUCC'] = 'Product deleted successfully.';
+$i18n['ADMIN_PRODUCT_DELETE_ERROR'] = 'Error deleting product.';
+$i18n['ADMIN_PRODUCT_INDEX_SUCC'] = 'Products numerically indexed successfully.';
+$i18n['ADMIN_PRODUCT_INDEX_ERROR'] = 'Error enumerating products.';
+$i18n['ADMIN_SETTINGS_SUCC'] = 'Settings saved successfully.';
+$i18n['ADMIN_SETTINGS_ERROR'] = 'Error saving settings.';
 
 $i18n['BTN_SAVEORDER'] = 'Save Order';
 ?>

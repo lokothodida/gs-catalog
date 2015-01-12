@@ -3,19 +3,22 @@
 class CatalogFrontEnd {
   // == PROPERTIES ==
   private static $urlPath = array(),
+                 $_get = false, $_post = false,
                  $settings,
                  $templates,
                  $categories, $category,
                  $products, $product,
-                 $pageTitle, $pageContent;
+                 $languages, $language,
+                 $pageTitle, $pageContent, $pageTemplate;
 
   // == METHODS ==
   public static function inCatalog() {
     self::$settings = CatalogSettings::getMainSettings();
-    self::$urlPath = self::parseUrl();
+    self::parseUrl();
 
     $withprettyurls    = strpos(self::getFullUrl(), self::getUrl()) !== false;
     $withoutprettyurls = strpos(self::getFullUrl(), self::getUrl(false)) !== false;
+
     return $withprettyurls || $withoutprettyurls;
   }
 
@@ -26,13 +29,77 @@ class CatalogFrontEnd {
   private static function parseUrl() {
     $url = trim(str_replace(array(self::getUrl(), self::getUrl(false)), '', self::getFullUrl()));
 
-    self::$urlPath = explode('/', $url);
-    self::$urlPath = array_values(array_filter(self::$urlPath));
+    if (!self::$urlPath) {
+      self::$urlPath = explode('/', $url);
+      self::$urlPath = array_values(array_filter(self::$urlPath, 'self::removeEmptyElement'));
+
+      if (isset(self::$urlPath[count(self::$urlPath) - 1])) {
+        $tmp = explode('?', self::$urlPath[count(self::$urlPath) - 1]);
+        $tmp = (count($tmp) == 1) ? explode('&', self::$urlPath[count(self::$urlPath) - 1], 2) : $tmp;
+
+        self::$urlPath[count(self::$urlPath) - 1] = $tmp[0];
+
+        if (isset($tmp[1])) {
+          // remove everything past the '?' from the urlPath variable
+          unset(self::$urlPath[count(self::$urlPath) - 1]);
+        }
+      }
+    }
+
+    if (!self::$_get) {
+      //self::$_get = isset(self::$urlPath[count(self::$urlPath) - 1]) ? self::parseGet(self::$urlPath[count(self::$urlPath) - 1]) : array();
+      self::$_get = isset($tmp[1]) ? self::parseGet($tmp[1]) : $_GET;
+    }
   }
 
+  private static function removeEmptyElement($elem) {
+    return trim($elem) != '';
+  }
+
+  private static function parseGet($string) {
+    $get = explode('&', $string);
+    $_get = array();
+
+    foreach ($get as $i => $g) {
+      $tmp = explode('=', $g);
+      $_get[$tmp[0]] = isset($tmp[1]) ? $tmp[1] : null;
+    }
+
+    // setting the language
+    if (isset($_get['setlang']) && function_exists('return_i18n_setlang_url')) {
+      return_i18n_setlang_url($_get['setlang']);
+    }
+
+    return $_get;
+  }
+  
   public static function init() {
     self::$templates = CatalogSettings::getThemeSettings();
-    self::parseUrl();
+    self::$languages = self::$settings['languages'];
+    self::$languages = self::getLanguage();
+    self::$pageTemplate = self::$settings['template'];
+  }
+
+  private static function getLanguage() {
+    if (function_exists('return_i18n_languages')) {
+      return return_i18n_languages();
+    } else {
+      return false;
+    }
+  }
+
+  public static function getDefaultLanguage() {
+    if (function_exists('return_i18n_default_language')) {
+      return return_i18n_default_language();
+    } else {
+      return false;
+    }
+  }
+
+  public static function getCurrentLanguage() {
+    $languages = self::getLanguage();
+
+    return $languages ? $languages[0] : false;
   }
 
   public static function getUrl($prettyUrls = true) {
@@ -43,13 +110,31 @@ class CatalogFrontEnd {
   }
 
   public static function getCategoryUrl($slug) {
-    $url = self::getUrl() . '/category/' . $slug . '/';
+    $settings = CatalogSettings::getMainSettings();
+    $url = self::getUrl();
+
+    if ($settings['slugged'] == 'y') {
+      $url .= '/category/' . $slug . '/';
+    } else {
+      $isInIndex = CatalogCategory::isInIndex($slug);
+
+      $url .= '/category/' . (($isInIndex !== false) ? $isInIndex : $slug)  . '/';
+    }
 
     return $url;
   }
 
   public static function getProductUrl($slug) {
-    $url = self::getUrl() . '/product/' . $slug . '/';
+    $settings = CatalogSettings::getMainSettings();
+    $url = self::getUrl();
+
+    if ($settings['slugged'] == 'y') {
+      $url .= '/product/' . $slug . '/';
+    } else {
+      $isInIndex = CatalogProduct::isInIndex($slug);
+
+      $url .= '/product/' . (($isInIndex !== false) ? $isInIndex : $slug)  . '/';
+    }
 
     return $url;
   }
@@ -89,38 +174,42 @@ class CatalogFrontEnd {
           'title' => self::$settings['title'],
           'url' => self::getUrl())
       );
-    } elseif ($type == 'category' && $slug) {
+    } elseif ($type == 'category' && $slug && CatalogCategory::exists($slug)) {
+      $lang = self::getCurrentLanguage();
       self::$categories = isset(self::$categories) ? self::$categories : CatalogCategory::getCategories(array('key' => 'slug'));
-      $category = self::$categories[$slug];
+      $category = CatalogCategory::getCategory($slug, $lang);
 
       $recursType = !isset(self::$categories[$category->get('parent')]) ? 'home' : 'category';
       $recursSlug = !isset(self::$categories[$category->get('parent')]) ? null : $category->get('parent');
 
-      $crumbs   = self::getBreadcrumbs($recursType, $recursSlug);
+      $crumbs   = self::getBreadcrumbsImpl($recursType, $recursSlug);
       $crumbs[] = array(
         'title' => $category->get('title'),
         'url' => self::getCategoryUrl($category->get('slug')));
 
       return $crumbs;
-    } elseif ($type == 'product' && $slug) {
-      $product = CatalogProduct::getProduct($slug);
+    } elseif ($type == 'product' && $slug && CatalogProduct::exists($slug)) {
+      $lang = self::getCurrentLanguage();
+      $product = CatalogProduct::getProduct($slug, $lang);
       $category = $product->get('categories');
       $recursType = isset($category[0]) ? 'category' : 'home';
       $recursSlug = isset($category[0]) ? $category[0] : null;
 
-      $crumbs   = self::getBreadcrumbs($recursType, $recursSlug);
+      $crumbs   = self::getBreadcrumbsImpl($recursType, $recursSlug);
       $crumbs[] = array(
         'title' => $product->get('title'),
         'url' => self::getProductUrl($product->get('slug')));
 
       return $crumbs;
     } elseif ($type == 'search') {
-      $crumbs   = self::getBreadcrumbs('home', null);
+      $crumbs   = self::getBreadcrumbsImpl('home', null);
       $crumbs[] = array(
         'title' => i18n_r('catalog/SEARCH'),
         'url' => self::getSearchUrl());
 
       return $crumbs;
+    } else {
+      return self::getBreadcrumbsImpl('home', null);
     }
   }
 
@@ -139,22 +228,45 @@ class CatalogFrontEnd {
 
   public static function setPageInformation() {
     if (self::isCategory() && isset(self::$urlPath[1])) {
-      $category        = CatalogCategory::getCategory(self::$urlPath[1]);
-      $products        = CatalogProduct::getProducts(
-        array('category' => $category->get('slug')));
-      self::$pageContent = self::evaluateTemplate(array(), 'header') . self::evaluateTemplate(
-        array(
-          'category' => $category,
-          'products' => $products),
-        'category') . self::evaluateTemplate(array(), 'footer');
-      self::$pageTitle = $category->get('title');
+      $page = isset(self::$_get['p']) ? self::$_get['p'] : 1;
+      $lang = self::getCurrentLanguage();
+      $slug = self::$urlPath[1];
+
+      if (CatalogCategory::exists($slug)) {
+        $category        = CatalogCategory::getCategory($slug, $lang);
+        $slug            = $category->get('slug');
+        $products        = CatalogProduct::getProductsPaginated(
+          array('category' => $slug, 'lang' => $lang),
+          array(
+            'itemsPerPage' => self::$settings['productsperpage'],
+            'currentPage' => $page,
+            'url' => self::getCategoryUrl($slug) . '?p=%page%'));
+        self::$pageContent = self::evaluateTemplate(array(), 'header') . self::evaluateTemplate(
+          array(
+            'category' => $category,
+            'products' => $products['results'],
+            'pagination' => $products['results'] ? $products['navigation'] : null),
+          'category') . self::evaluateTemplate(array(), 'footer');
+        self::$pageTitle = $category->get('title');
+      } else {
+        self::$pageTitle = self::$settings['title'];
+        self::$pageContent = self::$settings['categoryerror'];
+      }
     } elseif (self::isProduct() && isset(self::$urlPath[1])) {
-      $product           = CatalogProduct::getProduct(self::$urlPath[1]);
-      self::$pageTitle   = $product->get('title');
-      self::$pageContent = self::evaluateTemplate(array(), 'header') . self::evaluateTemplate(
-        array(
-          'product' => $product),
-        'product') . self::evaluateTemplate(array(), 'footer');
+      $slug = self::$urlPath[1];
+
+      if (CatalogProduct::exists($slug)) {
+        $lang              = self::getCurrentLanguage();
+        $product           = CatalogProduct::getProduct($slug, $lang);
+        self::$pageTitle   = $product->get('title');
+        self::$pageContent = self::evaluateTemplate(array(), 'header') . self::evaluateTemplate(
+          array(
+            'product' => $product),
+          'product') . self::evaluateTemplate(array(), 'footer');
+      } else {
+        self::$pageTitle = self::$settings['title'];
+        self::$pageContent = self::$settings['producterror'];
+      }
     } elseif(self::isSearch()) {
       
     } elseif(self::isHome()) {
@@ -183,17 +295,41 @@ class CatalogFrontEnd {
   }
 
   private static function displayHome($format = null) {
-    $categories = CatalogCategory::getCategories();
+    $lang = self::getCurrentLanguage();
+    $categories = CatalogCategory::getCategories(
+      array('order' => 'custom', 'view' => self::$settings['categoryview'], 'lang' => $lang));
 
-    $buffer = self::evaluateTemplate(array(), 'indexheader');
+    $buffer = self::evaluateTemplate(array(), 'header') . self::evaluateTemplate(array(), 'indexheader');
 
-    foreach ($categories as $category) {
-      $buffer .= self::evaluateTemplate(
-        array('category' => $category),
-        'indexcategories');
+    if (self::$settings['categoryview'] == 'nested') {
+      $buffer .= self::displayNestedCategories($categories['parents'], $categories['children']);
+    } else {
+      foreach ($categories as $category) {
+        $buffer .= self::evaluateTemplate(
+          array('category' => $category),
+          'indexcategories');
+      }
     }
 
-    return $buffer . self::evaluateTemplate(array(), 'indexfooter');
+    return $buffer . self::evaluateTemplate(array(), 'indexfooter') . self::evaluateTemplate(array(), 'footer');
+  }
+
+  private static function displayNestedCategories($parents, $children) {
+    $buffer = '<ul>';
+
+    foreach ($parents as $parent) {
+      $buffer .= '<li class="category">' . self::evaluateTemplate(
+          array('category' => $parent),
+          'indexcategories');
+      
+      if (isset($children[$parent->get('slug')])) {
+        $buffer .= self::displayNestedCategories($children[$parent->get('slug')], $children);
+      }
+
+      $buffer .= '</li>';
+    }
+
+    return $buffer . '</ul>';
   }
 
   private static function evaluateTemplate(array $variables = array(), $template) {
@@ -216,6 +352,10 @@ class CatalogFrontEnd {
 
   public static function getPageContent() {
     return self::$pageContent;
+  }
+
+  public static function getPageTemplate() {
+    return self::$pageTemplate;
   }
 }
 

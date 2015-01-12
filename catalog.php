@@ -32,18 +32,11 @@ require_once(CATALOGPLUGINPATH . 'settings.class.php');
 // activate filter
 add_action('nav-tab', 'createNavTab', array('catalog', $thisfile, i18n_r('catalog/TAB'), 'overview'));
 add_action('catalog-sidebar', 'createSideMenu', array($thisfile, i18n_r('catalog/OVERVIEW'), 'overview'));
-
-if (defined('IN_GS')) {
-  if (isset($_GET['categories'])) {
-    add_action('catalog-sidebar', 'createSideMenu', array($thisfile, i18n_r('catalog/CREATE_CATEGORY'), 'categories&create'));
-  }
-}
 add_action('catalog-sidebar', 'createSideMenu', array($thisfile, i18n_r('catalog/CATEGORIES'), 'categories'));
 add_action('catalog-sidebar', 'createSideMenu', array($thisfile, i18n_r('catalog/PRODUCTS'), 'products'));
 add_action('catalog-sidebar', 'createSideMenu', array($thisfile, i18n_r('catalog/SETTINGS'), 'settings'));
 
 add_action('error-404', 'catalog_main');
-add_action('index-post-dataindex', 'catalog_main');
 
 add_action('search-index', 'CatalogBackEnd::searchIndex');
 add_filter('search-item', 'CatalogBackEnd::searchItem');
@@ -74,7 +67,10 @@ function catalog_get_category($id) {
 
 // get a product
 function catalog_get_product($id) {
-  return CatalogProduct::getProduct($id);
+  $lang = CatalogFrontEnd::getCurrentLanguage();
+  $lang = ($lang == CatalogFrontEnd::getDefaultLanguage()) ? false : $lang;
+
+  return CatalogProduct::getProduct($id, $lang);
 }
 
 // get url of the main catalog
@@ -136,16 +132,28 @@ function catalog_admin() {
       CatalogBackEnd::displayCreateCategoryPage($_GET['create']);
     } elseif (isset($_GET['edit'])) {
       if (isset($_POST['editCategory'])) {
-        CatalogBackEnd::editCategory($_GET['edit'], $_POST);
+        $succ = CatalogBackEnd::editCategory($_GET['edit'], $_POST);
+        $msg  = i18n_r('catalog/ADMIN_CATEGORY_EDIT_' . ($succ ? 'SUCC' : 'ERROR'));
+        CatalogBackEnd::displayErrorMessage($msg, $succ);
       }
       CatalogBackEnd::displayEditCategoryPage($_GET['edit']);
     } else {
       if (isset($_POST['createCategory'])) {
-        CatalogBackEnd::createCategory($_POST);
+        $succ = CatalogBackEnd::createCategory($_POST);
+        $msg  = i18n_r('catalog/ADMIN_CATEGORY_CREATE_' . ($succ ? 'SUCC' : 'ERROR'));
+        CatalogBackEnd::displayErrorMessage($msg, $succ);
       } elseif (isset($_POST['orderCategories'])) {
-        CatalogBackEnd::orderCategories($_POST);
+        $succ = CatalogBackEnd::orderCategories($_POST);
+        $msg  = i18n_r('catalog/ADMIN_CATEGORY_ORDER_' . ($succ ? 'SUCC' : 'ERROR'));
+        CatalogBackEnd::displayErrorMessage($msg, $succ);
       } elseif (isset($_GET['delete'])) {
-        CatalogBackEnd::deleteCategory($_GET['delete']);
+        $succ = CatalogBackEnd::deleteCategory($_GET['delete']);
+        $msg  = i18n_r('catalog/ADMIN_CATEGORY_DELETE_' . ($succ ? 'SUCC' : 'ERROR'));
+        CatalogBackEnd::displayErrorMessage($msg, $succ);
+      } elseif (isset($_GET['index'])) {
+        $succ = CatalogBackEnd::createCategoriesIndex();
+        $msg  = i18n_r('catalog/ADMIN_CATEGORY_INDEX_' . ($succ ? 'SUCC' : 'ERROR'));
+        CatalogBackEnd::displayErrorMessage($msg, $succ);
       }
 
       CatalogBackEnd::displayViewCategoriesPage();
@@ -155,14 +163,25 @@ function catalog_admin() {
       CatalogBackEnd::displayCreateProductPage($_GET['create']);
     } elseif (isset($_GET['edit'])) {
       if (isset($_POST['editProduct'])) {
-        CatalogBackEnd::editProduct($_GET['edit'], $_POST);
+        $succ = CatalogBackEnd::editProduct($_GET['edit'], $_POST);
+        $msg  = i18n_r('catalog/ADMIN_PRODUCT_EDIT_' . ($succ ? 'SUCC' : 'ERROR'));
+        CatalogBackEnd::displayErrorMessage($msg, $succ);
       }
+
       CatalogBackEnd::displayEditProductPage($_GET['edit']);
-    } elseif (isset($_GET['delete'])) {
-      CatalogBackEnd::displayDeleteProductPage($_GET['delete']);
     } else {
       if (isset($_POST['createProduct'])) {
-        CatalogBackEnd::createProduct($_POST);
+        $succ = CatalogBackEnd::createProduct($_POST);
+        $msg  = i18n_r('catalog/ADMIN_PRODUCT_CREATE_' . ($succ ? 'SUCC' : 'ERROR'));
+        CatalogBackEnd::displayErrorMessage($msg, $succ);
+      } elseif (isset($_GET['delete'])) {
+        $succ = CatalogBackEnd::deleteProduct($_GET['delete']);
+        $msg  = i18n_r('catalog/ADMIN_PRODUCT_DELETE_' . ($succ ? 'SUCC' : 'ERROR'));
+        CatalogBackEnd::displayErrorMessage($msg, $succ);
+      } elseif (isset($_GET['index'])) {
+        $succ = CatalogBackEnd::createProductsIndex();
+        $msg  = i18n_r('catalog/ADMIN_PRODUCT_INDEX_' . ($succ ? 'SUCC' : 'ERROR'));
+        CatalogBackEnd::displayErrorMessage($msg, $succ);
       }
 
       CatalogBackEnd::displayViewProductsPage();
@@ -170,22 +189,34 @@ function catalog_admin() {
   } elseif (isset($_GET['settings'])) {
     if ($_GET['settings'] == 'theme') {
       if (isset($_POST['editTheme'])) {
-        CatalogBackEnd::editSettingsTheme($_POST);
+        $succ = CatalogBackEnd::editSettingsTheme($_POST);
+        $msg  = i18n_r('catalog/ADMIN_SETTINGS_' . ($succ ? 'SUCC' : 'ERROR'));
+        CatalogBackEnd::displayErrorMessage($msg, $succ);
+      } elseif (isset($_GET['change'])) {
+        $succ = CatalogBackEnd::changeTheme($_GET['change']);
+        $msg  = i18n_r('catalog/ADMIN_SETTINGS_' . ($succ ? 'SUCC' : 'ERROR'));
+        CatalogBackEnd::displayErrorMessage($msg, $succ);
       }
       CatalogBackEnd::displaySettingsThemePage();
     } elseif ($_GET['settings'] == 'fields') {
       if (isset($_POST['editFields'])) {
-        CatalogBackEnd::editSettingsFields($_POST);
+        $succ = CatalogBackEnd::editSettingsFields($_POST);
+        $msg  = i18n_r('catalog/ADMIN_SETTINGS_' . ($succ ? 'SUCC' : 'ERROR'));
+        CatalogBackEnd::displayErrorMessage($msg, $succ);
       }
       CatalogBackEnd::displaySettingsFieldsPage();
     } elseif ($_GET['settings'] == 'cart') {
       if (isset($_POST['editCart'])) {
-        CatalogBackEnd::editSettingsCart($_POST);
+        $succ = CatalogBackEnd::editSettingsCart($_POST);
+        $msg  = i18n_r('catalog/ADMIN_SETTINGS_' . ($succ ? 'SUCC' : 'ERROR'));
+        CatalogBackEnd::displayErrorMessage($msg, $succ);
       }
       CatalogBackEnd::displaySettingsCartPage();
     } else {
       if (isset($_POST['editMain'])) {
-        CatalogBackEnd::editSettingsMain($_POST);
+        $succ = CatalogBackEnd::editSettingsMain($_POST);
+        $msg  = i18n_r('catalog/ADMIN_SETTINGS_' . ($succ ? 'SUCC' : 'ERROR'));
+        CatalogBackEnd::displayErrorMessage($msg, $succ);
       }
       CatalogBackEnd::displaySettingsMainPage();
     }
@@ -207,8 +238,9 @@ function catalog_main() {
   if (CatalogFrontEnd::inCatalog()) {
     CatalogFrontEnd::init();
     CatalogFrontEnd::setPageInformation();
-    $data_index->title   = CatalogFrontEnd::getPageTitle();
-    $data_index->content = CatalogFrontEnd::getPageContent();
+    $data_index->title    = CatalogFrontEnd::getPageTitle();
+    $data_index->content  = CatalogFrontEnd::getPageContent();
+    $data_index->template = CatalogFrontEnd::getPageTemplate();
   }
 
   return $data_index;

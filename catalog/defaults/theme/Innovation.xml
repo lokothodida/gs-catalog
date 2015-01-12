@@ -1,6 +1,12 @@
 <?xml version="1.0"?>
 <theme><header><![CDATA[<div class="catalog_breadcrumbs">
 	<?php catalog_output_breadcrumbs(); ?>
+</div>
+<div class="setlang">
+	Set catalog language: 
+	<a href="?setlang=en">en</a> |
+	<a href="?setlang=de">de</a> |
+	<a href="?setlang=ru">ru</a> 
 </div>]]></header><indexheader><![CDATA[<div class="catalog_breadcrumbs">
 	<?php catalog_output_breadcrumbs(); ?>
 </div>]]></indexheader><indexcategories><![CDATA[<div class="category">

@@ -1,49 +1,36 @@
 <?php
 
-class CatalogCategory {
+require_once(CATALOGPLUGINPATH . 'data.class.php');
+
+class CatalogCategory extends CatalogData {
   // == PROPERTIES ==
-  private $data = array();
+  protected static $classname = __CLASS__,
+                   $noExist = 'CATEGORY_DOES_NOT_EXIST',
+                   $folder = 'categories',
+                   $type = 'category';
 
-  // == METHODS ==
-  public function __construct($filename) {
-    if (file_exists($filename)) {
-      $this->getData($filename);
-    } elseif ($filename != null) {
-      throw new Exception('CATEGORYDOESNTEXIST');
-    }
+  // == STATIC (SINGLETON) METHODS ==
+  public static function getCategory($id, $lang = false) {
+    return parent::getItem($id, $lang);
   }
 
-  private function getData($filename) {
-    $xml = new SimpleXMLExtended($filename, 0, true);
+  public static function getCategories(array $params = array('order' => 'custom')) {
+    $categories = parent::getItems($params);
 
-    $this->data['title'] = $this->getXmlDataField($xml, 'title');
-    $this->data['description'] = $this->getXmlDataField($xml, 'description');
-    $this->data['order'] = $this->getXmlDataField($xml, 'order');
-    $this->data['parent'] = $this->getXmlDataField($xml, 'parent');
-    $this->data['slug'] = basename($filename, '.xml');
-  }
-
-  private function getXmlDataField($xml, $field) {
-    return !empty($xml->{$field}) ? (string) $xml->{$field} : null;
-  }
-
-  public static function getCategory($id) {
-    $filename = ($id == null) ? null : CATALOGDATAPATH . 'categories/' . $id . '.xml';
-
-    return new CatalogCategory($filename);
-  }
-
-  public static function getCategories($params = array()) {
-    $categories = array();
-
-    foreach (glob(CATALOGDATAPATH . 'categories/*.xml') as $file) {
-      $categories[] = new CatalogCategory($file);
+    if (isset($params['lang'])) {
+      foreach ($categories as $i => $category) {
+        $langs = $category->getAvailableLanguages();
+        if (in_array($params['lang'], $langs)) {
+          $cat = static::getCategory($category->getId(), $params['lang']);
+          $categories[$i] = $cat;
+        }
+      }
     }
 
     // order
     if (!empty($params['order'])) {
       if ($params['order'] == 'custom') {
-        usort($categories, 'self::sortCustom');
+        usort($categories, 'static::sortCustom');
       } elseif ($params['order'] == 'desc') {
         $categories = array_reverse($categories);
       }
@@ -58,72 +45,41 @@ class CatalogCategory {
       }
     }
 
+    if (!empty($params['view'])) {
+      if ($params['view'] == 'nested') {
+        $categories = static::splitChildrenandParents($categories);
+      }
+    } 
+
     return $categories;
   }
 
-  private static function sortCustom($a, $b) {
+  protected static function sortCustom($a, $b) {
     return (int) $a->get('order') - (int) $b->get('order');
   }
 
-  public static function create(array $data) {
-    $slug = CatalogBackEnd::strtoslug($data['title']);
-    $filename = isset($slug) ? CATALOGDATAPATH . 'categories/' . $slug . '.xml': null;
-
-    if (!file_exists($filename) && !empty($filename)) {
-      $xml = new SimpleXMLExtended('<category/>');
-      self::setXmlDataField($xml, 'title', $data['title']);
-      self::setXmlDataField($xml, 'description', $data['description']);
-      self::setXmlDataField($xml, 'order', 0);
-      self::setXmlDataField($xml, 'parent', $data['parent']);
-      self::setXmlDataField($xml, 'slug', $slug);
-
-      return (bool) $xml->saveXML($filename);
-    } else {
-      return false;
-    }
-  }
-
-  public static function edit($id, $data) {
-    $filename = CATALOGDATAPATH . 'categories/' . $id . '.xml';
-
-    if (file_exists($filename)) {
-      $xml = new SimpleXMLExtended('<category/>');
-      $data['slug'] = $id;
-      self::modifyXml($xml, $data);
-
-      return (bool) $xml->saveXML($filename);
-    } else {
-      return false;
-    }
-  }
-
-  private static function modifyXml($xml, $data) {
-    self::setXmlDataField($xml, 'title', $data['title']);
-    self::setXmlDataField($xml, 'description', $data['description']);
-    self::setXmlDataField($xml, 'order', 0);
-    self::setXmlDataField($xml, 'parent', $data['parent']);
-    self::setXmlDataField($xml, 'slug', $data['slug']);
-  }
-
-  public static function delete($id) {
-    $filename = ($id == null) ? null : CATALOGDATAPATH . 'categories/' . $id . '.xml';
+  protected static function splitChildrenandParents(array $categories) {
+    $parents = array();
+    $children = array();
     
-    if (file_exists($filename)) {
-      return unlink($filename);
-    } else {
-      return false;
+    foreach ($categories as $category) {
+      $parent = $category->get('parent');
+
+      if (!empty($parent)) {
+        $children[$parent][] = $category;
+      } else {
+        $parents[] = $category;
+      }
     }
+
+    return array('parents' => $parents, 'children' => $children);
   }
 
-  public static function setXmlDataField($xml, $field, $value) {
-    $xml->{$field} = null;
-    $xml->{$field}->addCData($value);
-    return $xml;
+  public static function createCategoriesIndex() {
+    return parent::createItemIndex();
   }
 
-  public function get($field) {
-    return isset($this->data[$field]) ? $this->data[$field] : null;
-  }
+  // == DYNAMIC (OBJECT) METHODS ==
 }
 
 ?>

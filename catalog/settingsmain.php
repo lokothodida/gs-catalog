@@ -67,18 +67,61 @@ ul.etabs { margin: 0 !important; padding: 0 !important; overflow: hidden; }
   <label for="slug"><?php i18n('catalog/SLUG'); ?>: </label>
   <input class="text" id="slug" name="slug" value="<?php echo $settings['slug']; ?>" type="text">
   </p>
+
+  <?php
+  $template = $settings['template'];
+  $theme_templates = '';
+  global $TEMPLATE;
+  // MAKE SELECT BOX OF AVAILABLE TEMPLATES
+  if ($template == '') { $template = 'template.php'; }
+
+  $themes_path = GSTHEMESPATH . $TEMPLATE;
+  $themes_handle = opendir($themes_path) or die("Unable to open ". GSTHEMESPATH);		
+  while ($file = readdir($themes_handle))	{		
+    if( isFile($file, $themes_path, 'php') ) {		
+      if ($file != 'functions.php' && substr(strtolower($file),-8) !='.inc.php' && substr($file,0,1)!=='.') {		
+        $templates[] = $file;		
+      }		
+    }		
+  }		
+      
+  sort($templates);
+
+  foreach ($templates as $file){
+    if ($template == $file)	{ 
+      $sel="selected"; 
+    } else{ 
+      $sel=""; 
+    }
+    
+    if ($file == 'template.php'){ 
+      $templatename=i18n_r('DEFAULT_TEMPLATE'); 
+    } else { 
+      $templatename=$file;
+    }
+    
+    $theme_templates .= '<option '.$sel.' value="'.$file.'" >'.$templatename.'</option>';
+  }
+  ?>
+  <p class="inline">
+    <label for="template"><?php i18n('catalog/TEMPLATE'); ?>: </label>
+    <select class="text" name="template">
+      <?php echo $theme_templates; ?>
+    </select>
+  </p>
+  
   <p class="inline">
   <input type="checkbox" name="wysiwyg" value="y" <?php if ($settings['wysiwyg'] == 'y') echo 'checked="checked"'; ?>>
   <label for="wysiwyg"><?php i18n('ENABLE_HTML_ED'); ?></label>
   <p>
-  <label for="wysiwyg"><?php i18n('catalog/WYSIWYG_TOOLBAR'); ?>: </label>
-  <select class="text" name="wysiwygtoolbar">
-  <?php foreach (array('basic', 'advanced') as $wysiwygtoolbar) : ?>
-  <option value="<?php echo $wysiwygtoolbar; ?>" <?php if ($settings['wysiwygtoolbar'] === $wysiwygtoolbar) echo 'selected'; ?>>
-  <?php i18n('catalog/' . strtoupper($wysiwygtoolbar)); ?>
-  </option>
-  <?php endforeach; ?>
-  </select>
+    <label for="wysiwyg"><?php i18n('catalog/WYSIWYG_TOOLBAR'); ?>: </label>
+    <select class="text" name="wysiwygtoolbar">
+      <?php foreach (array('basic', 'advanced') as $wysiwygtoolbar) : ?>
+      <option value="<?php echo $wysiwygtoolbar; ?>" <?php if ($settings['wysiwygtoolbar'] === $wysiwygtoolbar) echo 'selected'; ?>>
+      <?php i18n('catalog/' . strtoupper($wysiwygtoolbar)); ?>
+      </option>
+      <?php endforeach; ?>
+    </select>
   </p>
   </div>
   <div class="rightsec">
@@ -134,7 +177,7 @@ ul.etabs { margin: 0 !important; padding: 0 !important; overflow: hidden; }
   <option value="all" <?php if ($settings['categoryview'] == 'all') echo 'selected'; ?>>
   <?php i18n('catalog/VIEW_ALL'); ?>
   </option>
-  <option value="hierarchical" <?php if ($settings['categoryview'] == 'hierarchical') echo 'selected'; ?>>
+  <option value="nested" <?php if ($settings['categoryview'] == 'nested') echo 'selected'; ?>>
   <?php i18n('catalog/HIERARCHICAL'); ?>
   </option>
   <option value="parents" <?php if ($settings['categoryview'] == 'parents') echo 'selected'; ?>>
