@@ -36,7 +36,8 @@ add_action('catalog-sidebar', 'createSideMenu', array($thisfile, i18n_r('catalog
 add_action('catalog-sidebar', 'createSideMenu', array($thisfile, i18n_r('catalog/PRODUCTS'), 'products'));
 add_action('catalog-sidebar', 'createSideMenu', array($thisfile, i18n_r('catalog/SETTINGS'), 'settings'));
 
-add_action('error-404', 'catalog_main');
+add_action('index-post-dataindex', 'catalog_main');
+//add_action('error-404', 'catalog_main');
 
 add_action('search-index', 'CatalogBackEnd::searchIndex');
 add_filter('search-item', 'CatalogBackEnd::searchItem');
