@@ -77,6 +77,24 @@ $i18n['FOOTER'] = 'Footer';
 $i18n['SEARCH'] = 'Search';
 $i18n['CSS'] = 'CSS';
 
+// Cart
+$i18n['ENABLED'] = 'Enabled';
+$i18n['NAME'] = 'Name';
+$i18n['PRICE'] = 'Price';
+$i18n['QUANTITY'] = 'Quantity';
+$i18n['TOTAL'] = 'Total';
+$i18n['EMAIL'] = 'Email';
+$i18n['CURRENCY'] = 'Currency';
+$i18n['TAX_RATE'] = 'Tax Rate';
+$i18n['TAX_SHIPPING'] = 'Tax Shipping';
+$i18n['STYLE'] = 'Style';
+$i18n['PAYPAL'] = 'PayPal';
+$i18n['AMAZONPAYM'] = 'Amazon Payments';
+$i18n['GOOGLECHECK'] = 'Google Checkout';
+$i18n['FLAT_RATE'] = 'Flat Rate';
+$i18n['QUANTITY_RATE'] = 'Quantity Rate';
+$i18n['TOTAL_RATE'] = 'Total Rate';
+
 // Admin error messages
 $i18n['ADMIN_CATEGORY_CREATE_SUCC'] = 'Category created successfully.';
 $i18n['ADMIN_CATEGORY_CREATE_ERROR'] = 'Error creating category.';
