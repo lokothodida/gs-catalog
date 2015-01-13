@@ -1,24 +1,2 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<fields>
-  <field>
-    <name><![CDATA[stock]]></name>
-    <type><![CDATA[int]]></type>
-    <index><![CDATA[]]></index>
-    <label><![CDATA[Stock]]></label>
-    <default><![CDATA[]]></default>
-  </field>
-  <field>
-    <name><![CDATA[price]]></name>
-    <type><![CDATA[]]></type>
-    <index><![CDATA[]]></index>
-    <label><![CDATA[Price]]></label>
-    <default><![CDATA[0.00]]></default>
-  </field>
-  <field>
-    <name><![CDATA[image]]></name>
-    <type><![CDATA[image]]></type>
-    <index><![CDATA[]]></index>
-    <label><![CDATA[Image]]></label>
-    <default><![CDATA[http://]]></default>
-  </field>
-</fields>
+<?xml version="1.0"?>
+<fields><field><name><![CDATA[stock]]></name><label><![CDATA[Stock]]></label><type><![CDATA[text]]></type><default><![CDATA[0]]></default><index><![CDATA[y]]></index></field><field><name><![CDATA[price]]></name><label><![CDATA[Price]]></label><type><![CDATA[text]]></type><default><![CDATA[0.00]]></default><index><![CDATA[y]]></index></field><field><name><![CDATA[image]]></name><label><![CDATA[Image]]></label><type><![CDATA[image]]></type><default><![CDATA[http://]]></default><index><![CDATA[y]]></index></field><field><name><![CDATA[description]]></name><label><![CDATA[Description]]></label><type><![CDATA[wysiwyg]]></type><default><![CDATA[]]></default><index><![CDATA[y]]></index></field></fields>

@@ -1,20 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<settings>
-  <title><![CDATA[Catalog]]></title>
-  <slug><![CDATA[catalog]]></slug>
-  <productsperpage>6</productsperpage>
-  <pagination>top</pagination>
-  <template>template.php</template>
-  <view></view>
-  <categoryview></categoryview>
-  <internalsearch></internalsearch>
-  <i18nsearch></i18nsearch>
-  <slugged></slugged>
-  <wysiwyg></wysiwyg>
-  <wysiwygtoolbar></wysiwygtoolbar>
-  <languages><![CDATA[en]]></languages>
-  <pageerror></pageerror>
-  <categoryerror></categoryerror>
-  <producterror></producterror>
-  <noresults></noresults>
-</settings>
+<?xml version="1.0"?>
+<settings><editMain><![CDATA[]]></editMain><title><![CDATA[Catalog]]></title><slug><![CDATA[catalog]]></slug><template><![CDATA[template.php]]></template><wysiwyg><![CDATA[y]]></wysiwyg><wysiwygtoolbar><![CDATA[basic]]></wysiwygtoolbar><slugged><![CDATA[y]]></slugged><internalsearch><![CDATA[y]]></internalsearch><productsperpage><![CDATA[6]]></productsperpage><pagination><![CDATA[top]]></pagination><languages><![CDATA[en]]></languages><categoryview><![CDATA[all]]></categoryview><pageerror><![CDATA[<p>Error - catalog page not find.</p>
+]]></pageerror><categoryerror><![CDATA[<p>Category not found.</p>
+]]></categoryerror><producterror><![CDATA[<p>Product not found.</p>
+]]></producterror><noresults><![CDATA[<p>No results found.</p>
+]]></noresults><submitted><![CDATA[Save Changes]]></submitted><i18nsearch><![CDATA[n]]></i18nsearch></settings>
