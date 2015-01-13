@@ -235,6 +235,10 @@ abstract class CatalogData {
     return $data;
   }
 
+  public function getFields() {
+    return array_keys($this->data);
+  }
+
   protected function getId() {
     $slug = $this->data['slug'];
     $tmp = explode('_', $slug);

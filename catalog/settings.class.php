@@ -157,6 +157,20 @@ class CatalogSettings {
     return (bool) $xml->saveXML($filename);
   }
 
+  public static function editSettingsCart(array $data) {
+    $filename = CATALOGDATAPATH . '/settings/cart.xml';
+    $xml = new SimpleXMLExtended('<cart/>');
+
+    // checkboxes
+    $data['enabled'] = isset($data['enabled']) ? 'y' : 'n';
+    
+    foreach ($data as $field => $value) {
+      self::addCData($xml, $field, $value);
+    }
+
+    return (bool) $xml->saveXML($filename);
+  }
+
   private static function addCData($node, $name, $data) {
     $node->{$name} = null;
     $node->{$name}->addCData($data);

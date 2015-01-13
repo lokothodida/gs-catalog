@@ -41,13 +41,14 @@ class CatalogFrontEnd {
 
         if (isset($tmp[1])) {
           // remove everything past the '?' from the urlPath variable
-          unset(self::$urlPath[count(self::$urlPath) - 1]);
+          //unset(self::$urlPath[count(self::$urlPath) - 1]);
         }
       }
+
+      self::$urlPath = array_values(array_filter(self::$urlPath, 'self::removeEmptyElement'));
     }
 
     if (!self::$_get) {
-      //self::$_get = isset(self::$urlPath[count(self::$urlPath) - 1]) ? self::parseGet(self::$urlPath[count(self::$urlPath) - 1]) : array();
       self::$_get = isset($tmp[1]) ? self::parseGet($tmp[1]) : $_GET;
     }
   }
@@ -75,6 +76,7 @@ class CatalogFrontEnd {
   
   public static function init() {
     self::$templates = CatalogSettings::getThemeSettings();
+    self::$settings  = CatalogSettings::getMainSettings();
     self::$languages = self::$settings['languages'];
     self::$languages = self::getLanguage();
     self::$pageTemplate = self::$settings['template'];
@@ -139,6 +141,10 @@ class CatalogFrontEnd {
     return $url;
   }
 
+  public static function getSearchUrl() {
+    return self::getUrl() . '/search/';
+  }
+
   public static function getPageType() {
     if (self::isSearch()) {
       return 'search';
@@ -162,9 +168,7 @@ class CatalogFrontEnd {
   }
 
   public static function getBreadcrumbs($type, $slug) {
-    //var_dump(self::getBreadcrumbsImpl($type, $slug));
     return self::getBreadcrumbsImpl($type, $slug);
-    //return array_reverse(self::getBreadcrumbsImpl($type, $slug));
   }
 
   private static function getBreadcrumbsImpl($type, $slug) {
@@ -227,6 +231,8 @@ class CatalogFrontEnd {
   }
 
   public static function setPageInformation() {
+    $cart = CatalogSettings::getCartSettings();
+    
     if (self::isCategory() && isset(self::$urlPath[1])) {
       $page = isset(self::$_get['p']) ? self::$_get['p'] : 1;
       $lang = self::getCurrentLanguage();
@@ -261,14 +267,30 @@ class CatalogFrontEnd {
         self::$pageTitle   = $product->get('title');
         self::$pageContent = self::evaluateTemplate(array(), 'header') . self::evaluateTemplate(
           array(
-            'product' => $product),
+            'product' => $product,
+            'cart' => $cart['template']),
           'product') . self::evaluateTemplate(array(), 'footer');
       } else {
         self::$pageTitle = self::$settings['title'];
         self::$pageContent = self::$settings['producterror'];
       }
     } elseif(self::isSearch()) {
-      
+      $page = isset(self::$_get['p']) ? self::$_get['p'] : 1;
+      $params = array();
+
+      if (isset(self::$_get['words'])) {
+        $params['words'] = self::$_get['words'];
+      } else {
+        $params['words'] = '';
+      }
+
+      $results = CatalogProduct::searchProducts($params,
+        array(
+          'itemsPerPage' => self::$settings['productsperpage'],
+          'currentPage' => $page,
+          'url' => self::getSearchUrl() . '?words=' . $params['words'] . '&p=%page%'));
+      self::$pageTitle   = i18n_r('catalog/SEARCH');
+      self::$pageContent = self::evaluateTemplate(array(), 'header') . self::displaySearchResults($results) . self::evaluateTemplate(array(), 'footer');
     } elseif(self::isHome()) {
       self::$pageContent = self::displayHome();
       self::$pageTitle   = self::$settings['title'];
@@ -287,7 +309,7 @@ class CatalogFrontEnd {
   }
 
   private static function isSearch() {
-    return isset(self::$urlPath[0]) && self::$urlPath[0] == 'search';
+    return isset(self::$urlPath[0]) && (self::$urlPath[0] == 'search') && (self::$settings['internalsearch'] == 'y');
   }
 
   private static function isHome() {
@@ -332,11 +354,92 @@ class CatalogFrontEnd {
     return $buffer . '</ul>';
   }
 
+  private static function showCart() {
+    ob_start();
+
+    global $SITEURL;
+    $settings = CatalogSettings::getCartSettings();
+    $simplecart = array(
+      'cartColumns' => array(
+        array('attr' => 'name', 'label' => $settings['labelname']),
+        array('attr' => 'price', 'label' => $settings['labelprice']),
+        array('attr' => 'quantity', 'label' => $settings['labelquantity']),
+        array('attr' => 'total', 'label' => $settings['labeltotal']),
+      ),
+      'cartStyle' => $settings['cartstyle'],
+      'checkout' => array(
+        'type' => $settings['checkouttype'],
+        'email' => $settings['checkoutemail']
+      ),
+      'currency' => $settings['currency'],
+      'language' => $settings['language'],
+      'shippingFlatRate' => $settings['shippingflatrate'],
+      'shippingQuantityRate' => $settings['shippingquantityrate'],
+      'shippingTotalRate' => $settings['shippingtotalrate'],
+      'taxRate' => $settings['taxrate'],
+      'taxShipping' => $settings['taxshipping']
+    );
+    ?>
+    
+    <script src="<?php echo $SITEURL; ?>/plugins/catalog/js/simpleCart.min.js"></script>
+    <script>
+      simpleCart(<?php echo json_encode($simplecart); ?>);
+    </script>
+    <?php
+    
+    $contents = ob_get_clean();
+
+    return $contents;
+  }
+
+  private static function displaySearchResults(array $results = array()) {
+    ob_start();
+    $settings = CatalogSettings::getMainSettings();
+    ?>
+    <form method="get">
+      <input type="text" name="words" />
+      <input type="submit" value="<?php i18n('catalog/SEARCH'); ?>"/>
+    </form>
+    <div class="navigation">
+      <?php if (isset($results['navigation'])) echo $results['navigation']; ?>
+    </div>
+    <div class="search-results">
+      <?php
+      if (!count($results['results'])) {
+        echo $settings['noresults'];
+      }
+
+      foreach ($results['results'] as $result) {
+        $item = (object) array();
+        foreach ($result->getFields() as $field) {
+          $item->{$field} = $result->get($field);
+        }
+
+        // i18n defaults
+        $item->link = self::getProductUrl($result->get('slug'));
+
+        echo self::evaluateTemplate(array('item' => $item), 'searchresult');
+      }
+      ?>
+    </div>
+    <div class="navigation">
+      <?php if (isset($results['navigation'])) echo $results['navigation']; ?>
+    </div>
+    <?php
+    $contents = ob_get_clean();
+
+    return $contents;
+  }
+
   private static function evaluateTemplate(array $variables = array(), $template) {
     ob_start();
 
     foreach ($variables as $name => $var) {
       ${$name} = $var;
+    }
+
+    if ($template == 'header') {
+      echo self::showCart();
     }
 
     eval("?>" . self::$templates[$template]);

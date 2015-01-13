@@ -43,6 +43,60 @@ class CatalogProduct extends CatalogData {
     return $paginated;
   }
 
+  public static function searchProducts(array $params = array(), array $paginate = array()) {
+    require_once(CATALOGPLUGINPATH . 'paginate.class.php');
+
+    $products = static::getProducts();
+    $results = array();
+
+    foreach ($products as $i => $product) {
+      $contents = '';
+
+      foreach ($product->getFields() as $field) {
+        $content = $product->get($field);
+
+        if (is_array($content)) {
+          $content = implode(' ', $content);
+        }
+
+        $contents .= $content . ' ';
+      }
+
+      $contents = strtolower($contents);
+      
+      if (isset($params['tags'])) {
+        $tags = explode(",", $params['tags']);
+        $tags = array_map('trim', $tags);
+        $in = true;
+        $i = 0;
+
+        while ($in && ($i < count($tags))) {
+          $in = $in && (strpos($contents, $tags[$i]) !== false);
+          $i++;
+        }
+
+        if ($in) {
+          $results[] = $product;
+        }
+      } elseif (isset($params['words'])) {
+        $words = strtolower($params['words']);
+
+        if (!empty($words) && strpos($contents, $words) !== false) {
+          $results[] = $product;
+        }
+      }
+    }
+
+    if ($paginate) {
+      $ap = new ArrayPaginate($results);
+      $results = $ap->paginate($paginate);
+    } else {
+      $results = array('results' => $results);
+    }
+
+    return $results;
+  }
+
   protected static function filterByCategory($product) {
     return in_array(self::$arrayFilterCategory, $product->get('categories'));
   }

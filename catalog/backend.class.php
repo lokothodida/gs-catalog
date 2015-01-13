@@ -116,6 +116,10 @@ class CatalogBackEnd {
   public static function editSettingsTheme(array $data) {
     return CatalogSettings::editSettingsTheme($data);
   }
+
+  public static function editSettingsCart(array $data) {
+    return CatalogSettings::editSettingsCart($data);
+  }
   
   public static function changeTheme($theme) {
     return CatalogSettings::changeTheme($theme);
@@ -273,6 +277,11 @@ class CatalogBackEnd {
     include(CATALOGPLUGINPATH . 'settingsfields.php');
   }
 
+  public static function displaySettingsCartPage() {
+    $settings = $cart = CatalogSettings::getCartSettings();
+    include(CATALOGPLUGINPATH . 'settingscart.php');
+  }
+  
   public static function displayErrorMessage($msg, $succ, $undo = false) {
     if ($undo) $msg .= ' <a href="' . $undo . '">' . i18n_r('UNDO') . '</a>';
     ?>
