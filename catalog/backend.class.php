@@ -47,7 +47,8 @@ class CatalogBackEnd {
   }
 
   private static function isDirEmpty($dir) {
-    return empty(glob($dir));
+    $files = glob($dir);
+    return empty($files);
   }
 
   private static function getCategories($order = 'asc', $key = null) {
