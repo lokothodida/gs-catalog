@@ -23,7 +23,8 @@ class CatalogBackEnd {
 
   // http://gilbert.pellegrom.me/php-quick-convert-string-to-slug/
   public static function strtoslug($string) {
-    return strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $string)));
+    $translit = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $string);
+    return strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $translit)));
   }
 
   private static function copyDefault($dir, $defaultDir) {
