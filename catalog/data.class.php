@@ -51,8 +51,15 @@ abstract class CatalogData {
   }
 
   public static function create($data) {
+    $folder = CATALOGDATAPATH . static::$folder . '/';
+
+    if (!file_exists($folder)) {
+      mkdir($folder, 0755, true);
+    }
+
     $slug = CatalogBackEnd::strtoslug($data['title']);
-    $filename = isset($slug) ? CATALOGDATAPATH . static::$folder . '/' . $slug . (!empty($data['language']) ? '_' . $data['language'] : null) . '.xml': null;
+
+    $filename = (isset($slug) ? $folder . $slug . (!empty($data['language']) ? '_' . $data['language'] : null) . '.xml': null);
 
     if (!file_exists($filename) && !empty($filename)) {
       $xml = new SimpleXMLExtended('<' . static::$type . '/>');
