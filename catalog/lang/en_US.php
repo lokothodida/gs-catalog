@@ -3,6 +3,7 @@
 $i18n = array();
 
 $i18n['TITLE'] = 'Title';
+$i18n['PLUGIN_DESCRIPTION'] = 'Catalog that allows you to manage categories and products.';
 $i18n['TAB'] = $i18n['CATALOG'] = 'Catalog';
 $i18n['CATEGORIES'] = 'Categories';
 $i18n['CATEGORY'] = 'Category';
