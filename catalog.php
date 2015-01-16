@@ -3,10 +3,13 @@
 // get correct id for plugin
 $thisfile = basename(__FILE__, '.php');
 
+// language file
+i18n_merge($thisfile) || i18n_merge($thisfile, 'en_US');
+
 // register the plugin
 register_plugin(
   $thisfile,
-  'Catalog',
+  i18n_r('catalog/CATALOG'),
   '0.4',
   'Lawrence Okoth-Odida',
   'https://github.com/lokothodida',
@@ -19,9 +22,6 @@ register_plugin(
 define('CATALOGPLUGINPATH', GSPLUGINPATH . 'catalog/');
 define('CATALOGDATAPATH', GSDATAOTHERPATH . 'catalog/');
 define('CATALOGADMINURL', 'load.php?id=catalog');
-
-// language file
-i18n_merge($thisfile) || i18n_merge($thisfile, 'en_US');
 
 // includes
 require_once(CATALOGPLUGINPATH . 'backend.class.php');
