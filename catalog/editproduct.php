@@ -92,7 +92,7 @@
           include('ckeditor.php');
         } elseif ($field['type'] == 'image') {
           // image field (by Tzvook)
-          echo '<input type="text" class="text" name="' . $field['name'] . '" id="' . $field['name'] . '" value="' . $value . '" onClick=\'window.open("../admin/filebrowser.php?CKEditorFuncNum=1&returnid=' . $field['name'] . '&type=images","mywindow","width=600,height=500")\'>';
+          echo '<input type="text" class="text" name="' . $field['name'] . '" id="field-' . $field['name'] . '" value="' . $value . '" onClick=\'window.open("../admin/filebrowser.php?CKEditorFuncNum=1&returnid=field-' . $field['name'] . '&type=images","mywindow","width=600,height=500,scrollbars=yes").focus();mywindow.focus()\'>';
         } elseif ($field['type'] == 'checkbox') {
           // checkbox
           echo '<input type="checkbox" id="' . $field['name'] . '" name="' . $field['name'] . '" value="y" ' . (($value == 'y') ? 'checked="checked"' : null) . '/>';

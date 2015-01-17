@@ -62,7 +62,7 @@
   <div class="rightsec">
     <p>
       <label><?php i18n('catalog/IMAGE'); ?>: </label>
-      <input class="text" name="image" value="<?php echo $cat->get('image'); ?>" placeholder="http://" id="image" onClick='window.open("../admin/filebrowser.php?CKEditorFuncNum=1&returnid=image&type=images","mywindow","width=600,height=500")'/>
+      <input class="text" name="image" id="image" value="<?php echo $cat->get('image'); ?>" placeholder="http://" onClick='window.open("../admin/filebrowser.php?CKEditorFuncNum=1&returnid=image&type=images","mywindow","width=600,height=500,scrollbars=yes").focus();mywindow.focus();'/>
     </p>
   </div>
 
