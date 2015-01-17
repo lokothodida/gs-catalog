@@ -121,4 +121,10 @@ $i18n['ADMIN_SETTINGS_SUCC'] = 'Settings saved successfully.';
 $i18n['ADMIN_SETTINGS_ERROR'] = 'Error saving settings.';
 
 $i18n['BTN_SAVEORDER'] = 'Save Order';
+
+// Transliteration
+$i18n['TRANSLITERATION'] = array(
+  "א"=>"a","ב"=>"b","ג"=>"g","ד"=>"d"
+  ,"ה"=>"h","ו"=>"v","ז"=>"z","ח"=>"h","ט"=>"t","י"=>"y","כ"=>"k","ל"=>"l","מ"=>"m","נ"=>"n","ס"=>"s","ע"=>"a","פ"=>"p","צ"=>"tz","ק"=>"k","ר"=>"r","ש"=>"sh","ת"=>"t","ץ"=>"tz","ך"=>"ch","ף"=>"f","ם"=>"m"
+);
 ?>
