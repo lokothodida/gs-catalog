@@ -58,6 +58,7 @@ abstract class CatalogData {
     }
 
     $slug = CatalogBackEnd::strtoslug($data['title']);
+    $slug = empty($slug) ? 'temp-' . time() : $slug;
 
     $filename = (isset($slug) ? $folder . $slug . (!empty($data['language']) ? '_' . $data['language'] : null) . '.xml': null);
 
