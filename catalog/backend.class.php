@@ -21,9 +21,23 @@ class CatalogBackEnd {
     return function_exists('i18n_init');
   }
 
+  // copied from transliteration code in core
+  public static function translit($str) {
+    global $i18n;
+
+    if (isset($i18n['TRANSLITERATION']) && is_array($translit = $i18n['TRANSLITERATION']) && count($translit > 0)) {
+      $str = str_replace(array_keys($translit),array_values($translit),$str);
+    }
+
+    $str = to7bit($str, 'UTF-8');
+    $str = clean_url($str);
+    return $str;
+  }
+  
   // http://gilbert.pellegrom.me/php-quick-convert-string-to-slug/
   public static function strtoslug($string) {
-    $translit = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $string);
+    //$translit = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $string);
+    $translit = self::translit($string);
     return strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $translit)));
   }
 
@@ -259,7 +273,8 @@ class CatalogBackEnd {
   }
 
   public static function displaySettingsMainPage() {
-    $settings = CatalogSettings::getMainSettings();
+    $settings  = CatalogSettings::getMainSettings();
+    $cancelUrl = CATALOGADMINURL . '&settings';
     include(CATALOGPLUGINPATH . 'settingsmain.php');
   }
 
@@ -271,16 +286,19 @@ class CatalogBackEnd {
       $themes[] = basename($file, '.xml');
     }
 
+    $cancelUrl = CATALOGADMINURL . '&settings=theme';
     include(CATALOGPLUGINPATH . 'settingstheme.php');
   }
 
   public static function displaySettingsFieldsPage() {
-    $settings = $fields = CatalogSettings::getFieldsSettings();
+    $settings  = $fields = CatalogSettings::getFieldsSettings();
+    $cancelUrl = CATALOGADMINURL . '&settings=fields';
     include(CATALOGPLUGINPATH . 'settingsfields.php');
   }
 
   public static function displaySettingsCartPage() {
-    $settings = $cart = CatalogSettings::getCartSettings();
+    $settings  = $cart = CatalogSettings::getCartSettings();
+    $cancelUrl = CATALOGADMINURL . '&settings=cart';
     include(CATALOGPLUGINPATH . 'settingscart.php');
   }
   
